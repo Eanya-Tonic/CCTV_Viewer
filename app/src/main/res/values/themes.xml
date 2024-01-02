@@ -1,0 +1,4 @@
+<resources>
+
+    <style name="Theme.央视浏览器" parent="@style/Theme.AppCompat.Light.NoActionBar" />
+</resources>
