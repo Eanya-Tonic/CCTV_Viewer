@@ -10,17 +10,17 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.央视浏览器">
         <activity
             android:name=".MainActivity"
-            android:banner="@drawable/app_icon_your_company"
+            android:banner="@drawable/logo"
             android:exported="true"
-            android:icon="@drawable/app_icon_your_company"
+            android:icon="@drawable/logo"
             android:label="@string/app_name"
-            android:logo="@drawable/app_icon_your_company"
+            android:logo="@drawable/logo"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
