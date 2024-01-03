@@ -6,6 +6,10 @@
 <br>
 从百度网盘下载：https://pan.baidu.com/s/1e5wMCorJIp9oi5yN8mJ1KA?pwd=qozp 提取码：qozp
 
+## 演示视频
+**B站：**
+[央视浏览器——一款支持遥控器的便捷电视直播观看软件](https://www.bilibili.com/video/BV1Cg4y1r7Hv)
+
 ## 使用方法
 **电视盒子：**
 
