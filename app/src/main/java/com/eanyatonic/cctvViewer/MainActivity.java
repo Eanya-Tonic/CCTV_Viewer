@@ -107,11 +107,11 @@ public class MainActivity extends AppCompatActivity {
                         "}\n" +
                         "\n" +
                         "// 页面加载完成后执行 JavaScript 脚本\n" +
-                        "async function executeScript() {\n" +
+                        "let interval=setInterval(async function executeScript() {\n" +
                         "    console.log('页面加载完成！');\n" +
                         "\n" +
-                        "    // 休眠 3000 毫秒（3秒）\n" +
-                        "    await sleep(3000);\n" +
+                        "    // 休眠 1000 毫秒（1秒）\n" +
+                        "    await sleep(1000);\n" +
                         "\n" +
                         "    // 休眠 50 毫秒\n" +
                         "    await sleep(50);\n" +
@@ -136,12 +136,13 @@ public class MainActivity extends AppCompatActivity {
                         "    console.log('点击全屏按钮');\n" +
                         "    var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player');\n" +
                         "    fullscreenBtn.click();\n" +
-                        "}\n" +
+                        "    clearInterval(interval);\n" +
+                        "}, 3000);\n" +
                         "\n" +
                         "executeScript();";
                 view.evaluateJavascript(script, null);
                 try {
-                    sleep(1000);
+                    sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -157,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN || event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
                 if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
                     // 执行上一个直播地址的操作
                     navigateToPreviousLive();
@@ -165,6 +166,16 @@ public class MainActivity extends AppCompatActivity {
                 } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
                     // 执行下一个直播地址的操作
                     navigateToNextLive();
+                    return true;  // 返回 true 表示事件已处理，不传递给 WebView
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+                    // 执行暂停操作
+                    simulateTouch(webView, 0.5f, 0.5f);
+                    return true;  // 返回 true 表示事件已处理，不传递给 WebView
+                }else if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
+                    // 刷新 WebView 页面
+                    if (webView != null) {
+                        webView.reload();
+                    }
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 }
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
