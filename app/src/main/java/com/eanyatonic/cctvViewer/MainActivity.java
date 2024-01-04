@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView inputTextView; // 用于显示正在输入的数字的 TextView
 
+    // 初始化透明的View
+    private View loadingOverlay;
+
 
 
     @Override
@@ -75,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
 
         // 初始化显示正在输入的数字的 TextView
         inputTextView = findViewById(R.id.inputTextView);
+
+        // 初始化 loadingOverlay
+        loadingOverlay = findViewById(R.id.loadingOverlay);
 
         // 加载上次保存的位置
         loadLastLiveIndex();
@@ -159,12 +165,21 @@ public class MainActivity extends AppCompatActivity {
                 executeScript();
                 """;
                 view.evaluateJavascript(script, null);
+
                 try {
                     sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 simulateTouch(view, 0.5f, 0.5f);
+
+                // 隐藏加载的View
+                try {
+                    sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                loadingOverlay.setVisibility(View.GONE);
             }
         });
 
@@ -258,6 +273,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadLiveUrl() {
         if (currentLiveIndex >= 0 && currentLiveIndex < liveUrls.length) {
+            // 显示加载的View
+            loadingOverlay.setVisibility(View.VISIBLE);
+
             webView.setInitialScale(getMinimumScale());
             webView.loadUrl(liveUrls[currentLiveIndex]);
         }
