@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -52,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String PREF_NAME = "MyPreferences";
     private static final String PREF_KEY_LIVE_INDEX = "currentLiveIndex";
+
+    private boolean doubleBackToExitPressedOnce = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,6 +252,20 @@ public class MainActivity extends AppCompatActivity {
         // 释放事件对象
         downEvent.recycle();
         upEvent.recycle();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "再按一次返回键退出应用", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
+        // 如果两秒内再次按返回键，则退出应用
     }
 
     @Override
