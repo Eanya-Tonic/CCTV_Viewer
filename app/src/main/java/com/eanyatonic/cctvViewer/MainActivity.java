@@ -19,6 +19,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
             "https://tv.cctv.com/live/cctv3/",
             "https://tv.cctv.com/live/cctv4/",
             "https://tv.cctv.com/live/cctv5/",
-            "https://tv.cctv.com/live/cctv5plus/",
             "https://tv.cctv.com/live/cctv6/",
             "https://tv.cctv.com/live/cctv7/",
             "https://tv.cctv.com/live/cctv8/",
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             "https://tv.cctv.com/live/cctv15/",
             "https://tv.cctv.com/live/cctv16/",
             "https://tv.cctv.com/live/cctv17/",
+            "https://tv.cctv.com/live/cctv5plus/",
             "https://tv.cctv.com/live/cctveurope",
             "https://tv.cctv.com/live/cctvamerica/",
     };
@@ -57,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean doubleBackToExitPressedOnce = false;
 
+    private StringBuilder digitBuffer = new StringBuilder(); // 用于缓存按下的数字键
+    private static final long DIGIT_TIMEOUT = 1000; // 超时时间（毫秒）
+
+    private TextView inputTextView; // 用于显示正在输入的数字的 TextView
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
 
         // 初始化 WebView
         webView = findViewById(R.id.webView);
+
+        // 初始化显示正在输入的数字的 TextView
+        inputTextView = findViewById(R.id.inputTextView);
 
         // 加载上次保存的位置
         loadLastLiveIndex();
@@ -187,10 +197,49 @@ public class MainActivity extends AppCompatActivity {
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 }
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
+            }else if (event.getKeyCode() >= KeyEvent.KEYCODE_0 && event.getKeyCode() <= KeyEvent.KEYCODE_9) {
+                int numericKey = event.getKeyCode() - KeyEvent.KEYCODE_0;
+
+                // 将按下的数字键追加到缓冲区
+                digitBuffer.append(numericKey);
+
+                // 使用 Handler 来在超时后处理输入的数字
+                new Handler().postDelayed(() -> handleNumericInput(), DIGIT_TIMEOUT);
+
+                // 更新显示正在输入的数字的 TextView
+                updateInputTextView();
+
+                return true;  // 事件已处理，不传递给 WebView
             }
         }
 
         return super.dispatchKeyEvent(event);  // 如果不处理，调用父类的方法继续传递事件
+    }
+
+    private void handleNumericInput() {
+        // 将缓冲区中的数字转换为整数
+        if (digitBuffer.length() > 0) {
+            int numericValue = Integer.parseInt(digitBuffer.toString());
+
+            // 检查数字是否在有效范围内
+            if (numericValue > 0 && numericValue <= liveUrls.length) {
+                currentLiveIndex = numericValue - 1;
+                loadLiveUrl();
+                saveCurrentLiveIndex(); // 保存当前位置
+            }
+
+            // 重置缓冲区
+            digitBuffer.setLength(0);
+
+            // 取消显示正在输入的数字
+            inputTextView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void updateInputTextView() {
+        // 在 TextView 中显示当前正在输入的数字
+        inputTextView.setVisibility(View.VISIBLE);
+        inputTextView.setText("换台：" + digitBuffer.toString());
     }
 
     private void loadLastLiveIndex() {
