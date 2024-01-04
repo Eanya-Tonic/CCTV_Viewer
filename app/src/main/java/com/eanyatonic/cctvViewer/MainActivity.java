@@ -394,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
         // 使用 Handler 延时隐藏覆盖层
         new Handler().postDelayed(() -> {
             findViewById(R.id.overlayTextView).setVisibility(View.GONE);
-        }, 5000);
+        }, 8000);
     }
 
     @Override
