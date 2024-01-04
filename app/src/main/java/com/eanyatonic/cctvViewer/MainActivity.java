@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
     // 频道显示view
     private TextView overlayTextView;
 
+    private String info = "";
+
 
 
     @Override
@@ -151,6 +153,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 // 页面加载完成后执行 JavaScript 脚本
+
+                // 清空info
+                info = "";
+
+                // 获取节目预告和当前节目
+                view.evaluateJavascript("document.querySelector('#jiemu > li.cur.act').innerText", value -> {
+                    // 处理获取到的元素值
+                    if (!value.equals("null") && !value.isEmpty()) {
+                        String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
+                        info += elementValueNow + "\n";
+                    }
+                });
+                view.evaluateJavascript("document.querySelector('#jiemu > li:nth-child(4)').innerText", value -> {
+                    // 处理获取到的元素值
+                    if (!value.equals("null") && !value.isEmpty()) {
+                        String elementValueNext = value.replace("\"", ""); // 去掉可能的引号
+                        info += elementValueNext;
+                    }
+                });
+
                 String script =
                 """
                 // 定义休眠函数
@@ -203,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                     loadingOverlay.setVisibility(View.GONE);
 
                     // 显示覆盖层，传入当前频道信息
-                    showOverlay("当前频道：" + channelNames[currentLiveIndex]);
+                    showOverlay(channelNames[currentLiveIndex] + "\n" + info);
                 }, 5000);
             }
         });
