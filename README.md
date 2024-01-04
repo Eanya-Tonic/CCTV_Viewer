@@ -16,7 +16,7 @@
 
 ![vor4bcbknhy](https://github.com/Eanya-Tonic/CCTV_Viewer/assets/74545593/bdcae443-23ab-4954-966b-4ce4b2ba6efe#pic_center)
 
-使用上下键切换频道，使用确认键暂停/继续播放视频，使用菜单键刷新页面
+使用上下键切换频道，使用确认键暂停/继续播放视频，使用菜单键刷新页面，输入数字键换到指定台
 
 **其他设备：**
 
