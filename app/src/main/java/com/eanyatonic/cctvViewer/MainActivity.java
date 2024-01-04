@@ -51,6 +51,29 @@ public class MainActivity extends AppCompatActivity {
             "https://tv.cctv.com/live/cctvamerica/",
     };
 
+    private String[] channelNames = {
+            "CCTV-1 综合",
+            "CCTV-2 财经",
+            "CCTV-3 综艺",
+            "CCTV-4 中文国际",
+            "CCTV-5 体育",
+            "CCTV-6 电影",
+            "CCTV-7 军事农业",
+            "CCTV-8 电视剧",
+            "CCTV-9 纪录",
+            "CCTV-10 科教",
+            "CCTV-11 戏曲",
+            "CCTV-12 社会与法",
+            "CCTV-13 新闻",
+            "CCTV-14 少儿",
+            "CCTV-15 音乐",
+            "CCTV-16 奥林匹克",
+            "CCTV-17 农业农村",
+            "CCTV-5+ 体育赛事",
+            "CCTV Europe",
+            "CCTV America"
+    };
+
     private int currentLiveIndex;
 
     private static final String PREF_NAME = "MyPreferences";
@@ -65,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
 
     // 初始化透明的View
     private View loadingOverlay;
+
+    // 频道显示view
+    private TextView overlayTextView;
 
 
 
@@ -81,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
 
         // 初始化 loadingOverlay
         loadingOverlay = findViewById(R.id.loadingOverlay);
+
+        // 初始化 overlayTextView
+        overlayTextView = findViewById(R.id.overlayTextView);
 
         // 加载上次保存的位置
         loadLastLiveIndex();
@@ -166,20 +195,16 @@ public class MainActivity extends AppCompatActivity {
                 """;
                 view.evaluateJavascript(script, null);
 
-                try {
-                    sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                simulateTouch(view, 0.5f, 0.5f);
+                new Handler().postDelayed(() -> {
+                    // 模拟触摸
+                    simulateTouch(view, 0.5f, 0.5f);
 
-                // 隐藏加载的View
-                try {
-                    sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                loadingOverlay.setVisibility(View.GONE);
+                    // 隐藏加载的 View
+                    loadingOverlay.setVisibility(View.GONE);
+
+                    // 显示覆盖层，传入当前频道信息
+                    showOverlay("当前频道：" + channelNames[currentLiveIndex]);
+                }, 5000);
             }
         });
 
@@ -336,6 +361,18 @@ public class MainActivity extends AppCompatActivity {
 
         new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
         // 如果两秒内再次按返回键，则退出应用
+    }
+
+    private void showOverlay(String channelInfo) {
+        // 设置覆盖层内容
+        overlayTextView.setText(channelInfo);
+
+        findViewById(R.id.overlayTextView).setVisibility(View.VISIBLE);
+
+        // 使用 Handler 延时隐藏覆盖层
+        new Handler().postDelayed(() -> {
+            findViewById(R.id.overlayTextView).setVisibility(View.GONE);
+        }, 5000);
     }
 
     @Override

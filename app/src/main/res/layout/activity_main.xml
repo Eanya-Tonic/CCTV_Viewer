@@ -24,6 +24,22 @@
         android:textColor="#FFFFFF"
         android:background="#80000000"/>
 
+    <TextView
+        android:id="@+id/overlayTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:padding="16dp"
+        android:gravity="center"
+        android:background="@drawable/rounded_background"
+        android:visibility="gone" />
+
+
+
     <RelativeLayout
         android:id="@+id/loadingOverlay"
         android:layout_width="match_parent"
