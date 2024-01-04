@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean doubleBackToExitPressedOnce = false;
 
     private StringBuilder digitBuffer = new StringBuilder(); // 用于缓存按下的数字键
-    private static final long DIGIT_TIMEOUT = 1000; // 超时时间（毫秒）
+    private static final long DIGIT_TIMEOUT = 3000; // 超时时间（毫秒）
 
     private TextView inputTextView; // 用于显示正在输入的数字的 TextView
 
