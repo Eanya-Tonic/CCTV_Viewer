@@ -106,45 +106,48 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 // 页面加载完成后执行 JavaScript 脚本
-                String script = "// 定义休眠函数\n" +
-                        "function sleep(ms) {\n" +
-                        "    return new Promise(resolve => setTimeout(resolve, ms));\n" +
-                        "}\n" +
-                        "\n" +
-                        "// 页面加载完成后执行 JavaScript 脚本\n" +
-                        "let interval=setInterval(async function executeScript() {\n" +
-                        "    console.log('页面加载完成！');\n" +
-                        "\n" +
-                        "    // 休眠 1000 毫秒（1秒）\n" +
-                        "    await sleep(1000);\n" +
-                        "\n" +
-                        "    // 休眠 50 毫秒\n" +
-                        "    await sleep(50);\n" +
-                        "\n" +
-                        "    console.log('点击分辨率按钮');\n" +
-                        "    var elem = document.querySelector('#resolution_item_720_player');\n" +
-                        "    elem.click();\n" +
-                        "\n" +
-                        "    // 休眠 50 毫秒\n" +
-                        "    await sleep(50);\n" +
-                        "\n" +
-                        "    console.log('设置音量并点击音量按钮');\n" +
-                        "    var btn = document.querySelector('#player_sound_btn_player');\n" +
-                        "    btn.setAttribute('volume', 100);\n" +
-                        "    btn.click();\n" +
-                        "    btn.click();\n" +
-                        "    btn.click();\n" +
-                        "\n" +
-                        "    // 休眠 50 毫秒\n" +
-                        "    await sleep(50);\n" +
-                        "\n" +
-                        "    console.log('点击全屏按钮');\n" +
-                        "    var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player');\n" +
-                        "    fullscreenBtn.click();\n" +
-                        "    clearInterval(interval);\n" +
-                        "}, 3000);\n" +
-                        "\n" +
-                        "executeScript();";
+                String script =
+                """
+                // 定义休眠函数
+                function sleep(ms) {
+                    return new Promise(resolve => setTimeout(resolve, ms));
+                }
+    
+                // 页面加载完成后执行 JavaScript 脚本
+                let interval=setInterval(async function executeScript() {
+                    console.log('页面加载完成！');
+    
+                    // 休眠 1000 毫秒（1秒）
+                    await sleep(1000);
+    
+                    // 休眠 50 毫秒
+                    await sleep(50);
+    
+                    console.log('点击分辨率按钮');
+                    var elem = document.querySelector('#resolution_item_720_player');
+                    elem.click();
+    
+                    // 休眠 50 毫秒
+                    await sleep(50);
+    
+                    console.log('设置音量并点击音量按钮');
+                    var btn = document.querySelector('#player_sound_btn_player');
+                    btn.setAttribute('volume', 100);
+                    btn.click();
+                    btn.click();
+                    btn.click();
+    
+                    // 休眠 50 毫秒
+                    await sleep(50);
+    
+                    console.log('点击全屏按钮');
+                    var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player');
+                    fullscreenBtn.click();
+                    clearInterval(interval);
+                }, 3000);
+    
+                executeScript();
+                """;
                 view.evaluateJavascript(script, null);
                 try {
                     sleep(5000);
