@@ -1,10 +1,7 @@
 package com.eanyatonic.cctvViewer;
 
-import static java.lang.Thread.sleep;
-
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,19 +11,23 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tencent.smtt.export.external.TbsCoreSettings;
+import com.tencent.smtt.sdk.QbSdk;
+import com.tencent.smtt.sdk.WebChromeClient;
+import com.tencent.smtt.sdk.WebSettings;
+import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
+
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
 
-    private WebView webView;
+    private com.tencent.smtt.sdk.WebView webView; // 导入 X5 WebView
 
     private String[] liveUrls = {
             "https://tv.cctv.com/live/cctv1/",
@@ -101,6 +102,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // X5WebView初始化
+        initX5WebView();
+
         // 初始化 WebView
         webView = findViewById(R.id.webView);
 
@@ -117,25 +121,108 @@ public class MainActivity extends AppCompatActivity {
         loadLastLiveIndex();
 
         // 配置 WebView 设置
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true); // 启用 JavaScript
-        webSettings.setDomStorageEnabled(true); // 启用 DOM Storage
-        webSettings.setDatabaseEnabled(true); // 启用数据库
-        webSettings.setUserAgentString("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
+        com.tencent.smtt.sdk.WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setDatabaseEnabled(true);
+        webSettings.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
 
         // 启用 JavaScript 自动点击功能
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            webSettings.setMixedContentMode(com.tencent.smtt.sdk.WebSettings.LOAD_NORMAL);
         }
 
-        webView.setWebViewClient(new WebViewClient() {
+        // 设置 WebViewClient 和 WebChromeClient
+        webView.setWebViewClient(new com.tencent.smtt.sdk.WebViewClient() {
             @Override
-            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            public void onReceivedSslError(com.tencent.smtt.sdk.WebView webView, com.tencent.smtt.export.external.interfaces.SslErrorHandler handler, com.tencent.smtt.export.external.interfaces.SslError error) {
                 handler.proceed(); // 忽略 SSL 错误
             }
-        });
+
+            // 设置 WebViewClient，监听页面加载完成事件
+            @Override
+            public void onPageFinished(com.tencent.smtt.sdk.WebView view, String url) {
+                    // 页面加载完成后执行 JavaScript 脚本
+
+                    // 清空info
+                    info = "";
+
+                    // 获取节目预告和当前节目
+                    view.evaluateJavascript("document.querySelector('#jiemu > li.cur.act').innerText", value -> {
+                        // 处理获取到的元素值
+                        if (!value.equals("null") && !value.isEmpty()) {
+                            String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
+                            info += elementValueNow + "\n";
+                        }
+                    });
+                    view.evaluateJavascript("document.querySelector('#jiemu > li:nth-child(4)').innerText", value -> {
+                        // 处理获取到的元素值
+                        if (!value.equals("null") && !value.isEmpty()) {
+                            String elementValueNext = value.replace("\"", ""); // 去掉可能的引号
+                            info += elementValueNext;
+                        }
+                    });
+
+                    String script =
+                            """
+                            // 定义休眠函数
+                            function sleep(ms) {
+                                return new Promise(resolve => setTimeout(resolve, ms));
+                            }
+                
+                            // 页面加载完成后执行 JavaScript 脚本
+                            let interval=setInterval(async function executeScript() {
+                                console.log('页面加载完成！');
+                
+                                // 休眠 1000 毫秒（1秒）
+                                await sleep(1000);
+                
+                                // 休眠 50 毫秒
+                                await sleep(50);
+                
+                                console.log('点击分辨率按钮');
+                                var elem = document.querySelector('#resolution_item_720_player');
+                                elem.click();
+                
+                                // 休眠 50 毫秒
+                                await sleep(50);
+                
+                                console.log('设置音量并点击音量按钮');
+                                var btn = document.querySelector('#player_sound_btn_player');
+                                btn.setAttribute('volume', 100);
+                                btn.click();
+                                btn.click();
+                                btn.click();
+                
+                                // 休眠 50 毫秒
+                                await sleep(50);
+                
+                                console.log('点击全屏按钮');
+                                var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player');
+                                fullscreenBtn.click();
+                                clearInterval(interval);
+                            }, 3000);
+                
+                            executeScript();
+                            """;
+                    view.evaluateJavascript(script, null);
+
+                    new Handler().postDelayed(() -> {
+                        // 模拟触摸
+                        // simulateTouch(view, 0.5f, 0.5f);
+
+                        // 隐藏加载的 View
+                        loadingOverlay.setVisibility(View.GONE);
+
+                        // 显示覆盖层，传入当前频道信息
+                        showOverlay(channelNames[currentLiveIndex] + "\n" + info);
+                    }, 5000);
+                }
+            });
+
+
 
         // 禁用缩放
         webSettings.setSupportZoom(false);
@@ -148,91 +235,32 @@ public class MainActivity extends AppCompatActivity {
         // 设置 WebView 客户端
         webView.setWebChromeClient(new WebChromeClient());
 
-        // 设置 WebViewClient，监听页面加载完成事件
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                // 页面加载完成后执行 JavaScript 脚本
-
-                // 清空info
-                info = "";
-
-                // 获取节目预告和当前节目
-                view.evaluateJavascript("document.querySelector('#jiemu > li.cur.act').innerText", value -> {
-                    // 处理获取到的元素值
-                    if (!value.equals("null") && !value.isEmpty()) {
-                        String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
-                        info += elementValueNow + "\n";
-                    }
-                });
-                view.evaluateJavascript("document.querySelector('#jiemu > li:nth-child(4)').innerText", value -> {
-                    // 处理获取到的元素值
-                    if (!value.equals("null") && !value.isEmpty()) {
-                        String elementValueNext = value.replace("\"", ""); // 去掉可能的引号
-                        info += elementValueNext;
-                    }
-                });
-
-                String script =
-                """
-                // 定义休眠函数
-                function sleep(ms) {
-                    return new Promise(resolve => setTimeout(resolve, ms));
-                }
-    
-                // 页面加载完成后执行 JavaScript 脚本
-                let interval=setInterval(async function executeScript() {
-                    console.log('页面加载完成！');
-    
-                    // 休眠 1000 毫秒（1秒）
-                    await sleep(1000);
-    
-                    // 休眠 50 毫秒
-                    await sleep(50);
-    
-                    console.log('点击分辨率按钮');
-                    var elem = document.querySelector('#resolution_item_720_player');
-                    elem.click();
-    
-                    // 休眠 50 毫秒
-                    await sleep(50);
-    
-                    console.log('设置音量并点击音量按钮');
-                    var btn = document.querySelector('#player_sound_btn_player');
-                    btn.setAttribute('volume', 100);
-                    btn.click();
-                    btn.click();
-                    btn.click();
-    
-                    // 休眠 50 毫秒
-                    await sleep(50);
-    
-                    console.log('点击全屏按钮');
-                    var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player');
-                    fullscreenBtn.click();
-                    clearInterval(interval);
-                }, 3000);
-    
-                executeScript();
-                """;
-                view.evaluateJavascript(script, null);
-
-                new Handler().postDelayed(() -> {
-                    // 模拟触摸
-                    simulateTouch(view, 0.5f, 0.5f);
-
-                    // 隐藏加载的 View
-                    loadingOverlay.setVisibility(View.GONE);
-
-                    // 显示覆盖层，传入当前频道信息
-                    showOverlay(channelNames[currentLiveIndex] + "\n" + info);
-                }, 5000);
-            }
-        });
-
         // 加载初始网页
         loadLiveUrl();
 
+    }
+
+    private void initX5WebView() {
+        // 搜集本地tbs内核信息并上报服务器，服务器返回结果决定使用哪个内核。
+        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
+            @Override
+            public void onViewInitFinished(boolean arg0) {
+                // x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
+                Log.d("X5CORE","onViewInitFinished is "+arg0);
+            }
+
+            @Override
+            public void onCoreInitFinished() {
+            }
+        };
+        // x5内核初始化接口
+        QbSdk.initX5Environment(this, cb);
+
+        // 在调用TBS初始化、创建WebView之前进行如下配置
+        HashMap map = new HashMap();
+        map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER, true);
+        map.put(TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE, true);
+        QbSdk.initTbsSettings(map);
     }
 
     @Override
