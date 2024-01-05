@@ -280,9 +280,17 @@ public class MainActivity extends AppCompatActivity {
                     simulateTouch(webView, 0.5f, 0.5f);
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 }else if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
-                    // 刷新 WebView 页面
-                    if (webView != null) {
-                        webView.reload();
+                    // 根据按键重复次数判断是长按还是短按
+                    if (event.getRepeatCount() > 0) {
+                        // 执行长按菜单键操作
+                        // 刷新 WebView 页面
+                        if (webView != null) {
+                            webView.reload();
+                        }
+                    } else {
+                        // 执行短按菜单键操作
+                        // 显示节目列表
+                        showOverlay(channelNames[currentLiveIndex] + "\n" + info);
                     }
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 }
