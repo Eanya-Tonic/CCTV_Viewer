@@ -8,13 +8,17 @@
 
 ## 演示视频
 **B站：**
+
+[央视浏览器v1.2更新——支持遥控器的电视直播观看软件](https://www.bilibili.com/video/BV1Gc41187D6)
+
 [央视浏览器——一款支持遥控器的便捷电视直播观看软件](https://www.bilibili.com/video/BV1Cg4y1r7Hv)
 
 ## 使用方法
 **电视盒子：**
 
 
-![vor4bcbknhy](https://github.com/Eanya-Tonic/CCTV_Viewer/assets/74545593/bdcae443-23ab-4954-966b-4ce4b2ba6efe#pic_center)
+![vor4bcbknhy](https://github.com/Eanya-Tonic/CCTV_Viewer/assets/74545593/623f89aa-8f0c-42a5-a68a-db38951a4a2e#pic_center)
+
 
 使用上下键切换频道，使用确认键暂停/继续播放视频，短按菜单键显示当前频道和节目信息，长按菜单键刷新页面，输入数字键换到指定台，双击返回键退出程序。
 
