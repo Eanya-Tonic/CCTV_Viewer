@@ -8,12 +8,10 @@ android {
 
     defaultConfig {
         applicationId "com.eanyatonic.cctvViewer"
-        // minSdk 21
-        minSdk 17
+        minSdk 21
         targetSdk 32
         versionCode 1
         versionName "1.0"
-
     }
 
     buildTypes {
