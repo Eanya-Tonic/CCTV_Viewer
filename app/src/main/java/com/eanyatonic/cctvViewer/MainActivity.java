@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.tencent.smtt.export.external.TbsCoreSettings;
@@ -99,6 +100,11 @@ public class MainActivity extends AppCompatActivity {
 
     // 在 MainActivity 中添加一个 Handler
     private final Handler handler = new Handler();
+
+    private boolean doubleMenuPressedOnce = false;
+    private boolean doubleMenuPressedTwice = false;
+
+
 
 
 
@@ -264,6 +270,24 @@ public class MainActivity extends AppCompatActivity {
         startPeriodicTask();
     }
 
+    // 频道选择列表
+    private void showChannelList() {
+        // 构建频道列表对话框
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("选择频道");
+
+        // 设置频道列表项
+        builder.setItems(channelNames, (dialog, which) -> {
+            // 在此处处理选择的频道
+            currentLiveIndex = which;
+            loadLiveUrl();
+            saveCurrentLiveIndex(); // 保存当前位置
+        });
+
+        // 显示对话框
+        builder.create().show();
+    }
+
     // 启动自动播放定时任务
     private void startPeriodicTask() {
         // 使用 postDelayed 方法设置定时任务
@@ -310,20 +334,32 @@ public class MainActivity extends AppCompatActivity {
                 } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
                     // 执行暂停操作
                     // simulateTouch(webView, 0.5f, 0.5f);
+                    // 显示节目列表
+                    showOverlay(channelNames[currentLiveIndex] + "\n" + info);
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 }else if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
-                    // 根据按键重复次数判断是长按还是短按
-                    if (event.getRepeatCount() > 0) {
-                        // 执行长按菜单键操作
+                    if (doubleMenuPressedOnce) {
+                        // 双击菜单键操作
                         // 刷新 WebView 页面
                         if (webView != null) {
                             webView.reload();
                         }
-                    } else {
-                        // 执行短按菜单键操作
-                        // 显示节目列表
-                        showOverlay(channelNames[currentLiveIndex] + "\n" + info);
+                        doubleMenuPressedTwice = true;
+                        return true;  // 返回 true 表示事件已处理，不传递给 WebView
                     }
+
+                    doubleMenuPressedOnce = true;
+
+                    new Handler().postDelayed(() -> {
+                        doubleMenuPressedOnce = false;
+                        if(!doubleMenuPressedTwice) {
+                            // 单击菜单键操作
+                            // 显示频道列表
+                            showChannelList();
+                        }
+                        doubleMenuPressedTwice = false;
+                    }, 800);
+
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 }
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
