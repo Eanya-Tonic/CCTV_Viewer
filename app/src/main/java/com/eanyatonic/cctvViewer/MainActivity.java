@@ -146,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean doubleMenuPressedOnce = false;
     private boolean doubleMenuPressedTwice = false;
 
+    private boolean doubleEnterPressedOnce = false;
+    private boolean doubleEnterPressedTwice = false;
+
+
 
 
 
@@ -233,8 +237,10 @@ public class MainActivity extends AppCompatActivity {
                     } else if (currentLiveIndex <= 40) {
                         // 获取当前节目
                         view.evaluateJavascript("document.getElementsByClassName(\"tvSelectJiemu\")[0].innerHTML + \" \" + document.getElementsByClassName(\"tvSelectJiemu\")[1].innerHTML", value -> {
-                            String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
-                            info += elementValueNow;
+                            if (!value.equals("null") && !value.isEmpty()) {
+                                String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
+                                info += elementValueNow;
+                            }
                         });
                     }
 
@@ -420,22 +426,64 @@ public class MainActivity extends AppCompatActivity {
                     navigateToNextLive();
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
-                    // 执行暂停操作
-                    if(currentLiveIndex <= 19){
-                        simulateTouch(webView, 0.5f, 0.5f);
-                    } else if (currentLiveIndex <= 40) {
-                        String scriptPause =
+
+                    if (doubleEnterPressedOnce) {
+                        // 双击操作
+
+                        String script1 =
+                                """   
+                                console.log('点击全屏按钮');
+                                document.querySelector('#player_pagefullscreen_yes_player').click();
+                                """;
+
+                        String script2 =
                                 """
-                                try{
-                                document.querySelector('.play.play2').click();
-                                } catch(e) {
-                                document.querySelector('.play.play1').click();
+                                console.log('点击全屏按钮');
+                                if(document.querySelector('.videoFull').id == ''){
+                                    document.querySelector('.videoFull').click();
+                                }else{
+                                    document.querySelector('.videoFull_ac').click();
                                 }
                                 """;
-                        webView.evaluateJavascript(scriptPause, null);
+
+                        if(currentLiveIndex <= 19){
+                            webView.evaluateJavascript(script1, null);
+                        } else if (currentLiveIndex <= 40) {
+                            new Handler().postDelayed(() -> {
+                                webView.evaluateJavascript(script2, null);
+                            }, 500);
+                        }
+
+                        doubleEnterPressedTwice = true;
+                        return true;  // 返回 true 表示事件已处理，不传递给 WebView
                     }
-                    // 显示节目列表
-                    showOverlay(channelNames[currentLiveIndex] + "\n" + info);
+
+                    doubleEnterPressedOnce = true;
+
+                    new Handler().postDelayed(() -> {
+                        doubleEnterPressedOnce = false;
+                        if(!doubleEnterPressedTwice) {
+
+                            // 执行暂停操作
+                            if(currentLiveIndex <= 19){
+                                simulateTouch(webView, 0.5f, 0.5f);
+                            } else if (currentLiveIndex <= 40) {
+                                String scriptPause =
+                                        """
+                                        try{
+                                        document.querySelector('.play.play2').click();
+                                        } catch(e) {
+                                        document.querySelector('.play.play1').click();
+                                        }
+                                        """;
+                                webView.evaluateJavascript(scriptPause, null);
+                            }
+                            // 显示节目列表
+                            showOverlay(channelNames[currentLiveIndex] + "\n" + info);
+                        }
+                        doubleEnterPressedTwice = false;
+                    }, 1000);
+
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 }else if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
                     if (doubleMenuPressedOnce) {
@@ -458,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
                             showChannelList();
                         }
                         doubleMenuPressedTwice = false;
-                    }, 800);
+                    }, 1000);
 
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 }
@@ -534,6 +582,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if(webView != null) {
+                            webView.setInitialScale(getMinimumScale());
                             webView.reload();
                         }
                     }
