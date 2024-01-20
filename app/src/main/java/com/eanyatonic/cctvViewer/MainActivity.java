@@ -53,6 +53,27 @@ public class MainActivity extends AppCompatActivity {
             "https://tv.cctv.com/live/cctv5plus/",
             "https://tv.cctv.com/live/cctveurope",
             "https://tv.cctv.com/live/cctvamerica/",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002309",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002521",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002483",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002520",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002475",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002508",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002485",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002509",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002498",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002506",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002531",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002481",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002516",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002525",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002484",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002490",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002503",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002505",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002532",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002493",
+            "https://www.yangshipin.cn/#/tv/home?pid=600002513",
     };
 
     private String[] channelNames = {
@@ -75,7 +96,28 @@ public class MainActivity extends AppCompatActivity {
             "CCTV-17 农业农村",
             "CCTV-5+ 体育赛事",
             "CCTV Europe",
-            "CCTV America"
+            "CCTV America",
+            "北京卫视",
+            "江苏卫视",
+            "东方卫视",
+            "浙江卫视",
+            "湖南卫视",
+            "湖北卫视",
+            "广东卫视",
+            "广西卫视",
+            "黑龙江卫视",
+            "海南卫视",
+            "重庆卫视",
+            "深圳卫视",
+            "四川卫视",
+            "河南卫视",
+            "福建东南卫视",
+            "贵州卫视",
+            "江西卫视",
+            "辽宁卫视",
+            "安徽卫视",
+            "河北卫视",
+            "山东卫视",
     };
 
     private int currentLiveIndex;
@@ -172,23 +214,31 @@ public class MainActivity extends AppCompatActivity {
                     // 清空info
                     info = "";
 
-                    // 获取节目预告和当前节目
-                    view.evaluateJavascript("document.querySelector('#jiemu > li.cur.act').innerText", value -> {
-                        // 处理获取到的元素值
-                        if (!value.equals("null") && !value.isEmpty()) {
+                    if(currentLiveIndex <= 19) {
+                        // 获取节目预告和当前节目
+                        view.evaluateJavascript("document.querySelector('#jiemu > li.cur.act').innerText", value -> {
+                            // 处理获取到的元素值
+                            if (!value.equals("null") && !value.isEmpty()) {
+                                String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
+                                info += elementValueNow + "\n";
+                            }
+                        });
+                        view.evaluateJavascript("document.querySelector('#jiemu > li:nth-child(4)').innerText", value -> {
+                            // 处理获取到的元素值
+                            if (!value.equals("null") && !value.isEmpty()) {
+                                String elementValueNext = value.replace("\"", ""); // 去掉可能的引号
+                                info += elementValueNext;
+                            }
+                        });
+                    } else if (currentLiveIndex <= 39) {
+                        // 获取当前节目
+                        view.evaluateJavascript("document.getElementsByClassName(\"tvSelectJiemu\")[0].innerHTML + \" \" + document.getElementsByClassName(\"tvSelectJiemu\")[1].innerHTML", value -> {
                             String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
-                            info += elementValueNow + "\n";
-                        }
-                    });
-                    view.evaluateJavascript("document.querySelector('#jiemu > li:nth-child(4)').innerText", value -> {
-                        // 处理获取到的元素值
-                        if (!value.equals("null") && !value.isEmpty()) {
-                            String elementValueNext = value.replace("\"", ""); // 去掉可能的引号
-                            info += elementValueNext;
-                        }
-                    });
+                            info += elementValueNow;
+                        });
+                    }
 
-                    String script =
+                String script1 =
                             """
                                     // 定义休眠函数
                                     function sleep(ms) {
@@ -232,14 +282,41 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                         clearInterval(interval);
                                     }, 3000);
-                                                    
-                                    executeScript();
                                     """;
-                    view.evaluateJavascript(script, null);
 
-                    new Handler().postDelayed(() -> {
+                    String script2 =
+                            """
+                                    // 定义休眠函数
+                                    function sleep(ms) {
+                                        return new Promise(resolve => setTimeout(resolve, ms));
+                                    }
+                                                    
+                                    // 页面加载完成后执行 JavaScript 脚本
+                                    let interval=setInterval(async function executeScript() {
+                                        console.log('页面加载完成！');
+                                                    
+                                        // 休眠 1000 毫秒（1秒）
+                                        await sleep(3000);
+                                        
+                                        console.log('点击全屏按钮');
+                                        var btn = document.querySelector('.videoFull');
+                                        btn.click();
+                                        
+                                        clearInterval(interval);
+                                    }, 3000);
+                            """;
+
+                    if(currentLiveIndex <= 19){
+                        view.evaluateJavascript(script1, null);
+                    } else if (currentLiveIndex <= 39) {
+                        new Handler().postDelayed(() -> {
+                        view.evaluateJavascript(script2, null);
+                        }, 3000);
+                    }
+
+                new Handler().postDelayed(() -> {
                         // 模拟触摸
-                        // simulateTouch(view, 0.5f, 0.5f);
+                        simulateTouch(view, 0.5f, 0.5f);
 
                         // 隐藏加载的 View
                         loadingOverlay.setVisibility(View.GONE);
@@ -309,13 +386,24 @@ public class MainActivity extends AppCompatActivity {
     // 获取 div 元素的 display 属性并执行相应的操作
     private void getDivDisplayPropertyAndDoSimulateTouch() {
         if (webView != null) {
-            webView.evaluateJavascript("document.getElementById('play_or_pause_play_player').style.display", value -> {
+            if(currentLiveIndex <= 19){
+                webView.evaluateJavascript("document.getElementById('play_or_pause_play_player').style.display", value -> {
                 // 处理获取到的 display 属性值
                 if (value.equals("\"block\"")) {
                     // 执行点击操作
                     simulateTouch(webView, 0.5f, 0.5f);
                 }
             });
+            } else if (currentLiveIndex <= 39) {
+                String scriptPlay =
+                    """
+                    try{
+                    document.querySelector('.play.play1').click();
+                    } catch(e) {
+                    }
+                    """;
+                webView.evaluateJavascript(scriptPlay, null);
+            }
         }
     }
 
@@ -333,7 +421,19 @@ public class MainActivity extends AppCompatActivity {
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
                     // 执行暂停操作
-                    simulateTouch(webView, 0.5f, 0.5f);
+                    if(currentLiveIndex <= 19){
+                        simulateTouch(webView, 0.5f, 0.5f);
+                    } else if (currentLiveIndex <= 39) {
+                        String scriptPause =
+                                """
+                                try{
+                                document.querySelector('.play.play2').click();
+                                } catch(e) {
+                                document.querySelector('.play.play1').click();
+                                }
+                                """;
+                        webView.evaluateJavascript(scriptPause, null);
+                    }
                     // 显示节目列表
                     showOverlay(channelNames[currentLiveIndex] + "\n" + info);
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
@@ -429,6 +529,16 @@ public class MainActivity extends AppCompatActivity {
 
             webView.setInitialScale(getMinimumScale());
             webView.loadUrl(liveUrls[currentLiveIndex]);
+            if(currentLiveIndex > 19){
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(webView != null) {
+                            webView.reload();
+                        }
+                    }
+                }, 1000);
+            }
         }
     }
 

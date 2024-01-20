@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.eanyatonic.cctvViewer"
-        minSdk 21
+        minSdk 19
         targetSdk 32
         versionCode 13
         versionName "1.3"
