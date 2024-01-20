@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                                 info += elementValueNext;
                             }
                         });
-                    } else if (currentLiveIndex <= 39) {
+                    } else if (currentLiveIndex <= 40) {
                         // 获取当前节目
                         view.evaluateJavascript("document.getElementsByClassName(\"tvSelectJiemu\")[0].innerHTML + \" \" + document.getElementsByClassName(\"tvSelectJiemu\")[1].innerHTML", value -> {
                             String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
                     if(currentLiveIndex <= 19){
                         view.evaluateJavascript(script1, null);
-                    } else if (currentLiveIndex <= 39) {
+                    } else if (currentLiveIndex <= 40) {
                         new Handler().postDelayed(() -> {
                         view.evaluateJavascript(script2, null);
                         }, 3000);
@@ -394,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
                     simulateTouch(webView, 0.5f, 0.5f);
                 }
             });
-            } else if (currentLiveIndex <= 39) {
+            } else if (currentLiveIndex <= 40) {
                 String scriptPlay =
                     """
                     try{
@@ -423,7 +423,7 @@ public class MainActivity extends AppCompatActivity {
                     // 执行暂停操作
                     if(currentLiveIndex <= 19){
                         simulateTouch(webView, 0.5f, 0.5f);
-                    } else if (currentLiveIndex <= 39) {
+                    } else if (currentLiveIndex <= 40) {
                         String scriptPause =
                                 """
                                 try{
