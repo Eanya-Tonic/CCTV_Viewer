@@ -1,5 +1,7 @@
 package com.eanyatonic.cctvViewer;
 
+import static com.eanyatonic.cctvViewer.FileUtils.copyAssets;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -102,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // X5WebView初始化
-        initX5WebView();
-
         // 初始化 WebView
         webView = findViewById(R.id.webView);
 
@@ -119,6 +118,20 @@ public class MainActivity extends AppCompatActivity {
 
         // 加载上次保存的位置
         loadLastLiveIndex();
+
+        copyAssets(this, "045738_x5.tbs.apk", "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
+
+        boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
+        Log.d("canLoadX5", String.valueOf(canLoadX5));
+        if (!canLoadX5) {
+            QbSdk.installLocalTbsCore(getApplicationContext(), 45738, "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
+        }
+
+        HashMap<String, Object> map = new HashMap<>(2);
+        map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER, true);
+        map.put(TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE, true);
+        QbSdk.initTbsSettings(map);
+
 
         // 配置 WebView 设置
         com.tencent.smtt.sdk.WebSettings webSettings = webView.getSettings();
@@ -238,29 +251,6 @@ public class MainActivity extends AppCompatActivity {
         // 加载初始网页
         loadLiveUrl();
 
-    }
-
-    private void initX5WebView() {
-        // 搜集本地tbs内核信息并上报服务器，服务器返回结果决定使用哪个内核。
-        QbSdk.PreInitCallback cb = new QbSdk.PreInitCallback() {
-            @Override
-            public void onViewInitFinished(boolean arg0) {
-                // x5內核初始化完成的回调，为true表示x5内核加载成功，否则表示x5内核加载失败，会自动切换到系统内核。
-                Log.d("X5CORE","onViewInitFinished is "+arg0);
-            }
-
-            @Override
-            public void onCoreInitFinished() {
-            }
-        };
-        // x5内核初始化接口
-        QbSdk.initX5Environment(this, cb);
-
-        // 在调用TBS初始化、创建WebView之前进行如下配置
-        HashMap map = new HashMap();
-        map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER, true);
-        map.put(TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE, true);
-        QbSdk.initTbsSettings(map);
     }
 
     @Override
@@ -383,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
         int screenHeight = displayMetrics.heightPixels;
 
         // 计算缩放比例，使用 double 类型进行计算
-        double scale = Math.min((double) screenWidth / 3840.0, (double) screenHeight / 2160.0) * 100;
+        double scale = Math.min((double) screenWidth / 1920.0, (double) screenHeight / 1080.0) * 100;
 
         // 四舍五入并转为整数
         return (int) Math.round(scale);
