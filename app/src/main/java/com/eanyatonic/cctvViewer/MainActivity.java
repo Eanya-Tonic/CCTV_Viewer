@@ -333,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
                     // 执行暂停操作
-                    // simulateTouch(webView, 0.5f, 0.5f);
+                    simulateTouch(webView, 0.5f, 0.5f);
                     // 显示节目列表
                     showOverlay(channelNames[currentLiveIndex] + "\n" + info);
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
