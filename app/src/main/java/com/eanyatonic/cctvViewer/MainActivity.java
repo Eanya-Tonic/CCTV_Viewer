@@ -97,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
 
     private String info = "";
 
+    // 在 MainActivity 中添加一个 Handler
+    private final Handler handler = new Handler();
+
+
 
 
     @Override
@@ -205,9 +209,9 @@ public class MainActivity extends AppCompatActivity {
                                 console.log('设置音量并点击音量按钮');
                                 var btn = document.querySelector('#player_sound_btn_player');
                                 btn.setAttribute('volume', 100);
-                                btn.click();
-                                btn.click();
-                                btn.click();
+                                // btn.click();
+                                // btn.click();
+                                // btn.click();
                 
                                 // 休眠 50 毫秒
                                 await sleep(50);
@@ -251,6 +255,39 @@ public class MainActivity extends AppCompatActivity {
         // 加载初始网页
         loadLiveUrl();
 
+        // 启动定时任务，每隔一定时间执行一次
+        startPeriodicTask();
+    }
+
+    // 启动自动播放定时任务
+    private void startPeriodicTask() {
+        // 使用 postDelayed 方法设置定时任务
+        handler.postDelayed(periodicTask, 5000); // 5000 毫秒，即 5 秒钟
+    }
+
+    // 定时任务具体操作
+    private final Runnable periodicTask = new Runnable() {
+        @Override
+        public void run() {
+            // 获取 div 元素的 display 属性，并执行相应的操作
+            getDivDisplayPropertyAndDoSimulateTouch();
+
+            // 完成后再次调度定时任务
+            handler.postDelayed(this, 5000); // 5000 毫秒，即 5 秒钟
+        }
+    };
+
+    // 获取 div 元素的 display 属性并执行相应的操作
+    private void getDivDisplayPropertyAndDoSimulateTouch() {
+        if (webView != null) {
+            webView.evaluateJavascript("document.getElementById('play_or_pause_play_player').style.display", value -> {
+                // 处理获取到的 display 属性值
+                if (value.equals("\"block\"")) {
+                    // 执行点击操作
+                    simulateTouch(webView, 0.5f, 0.5f);
+                }
+            });
+        }
     }
 
     @Override
@@ -267,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
                     // 执行暂停操作
-                    simulateTouch(webView, 0.5f, 0.5f);
+                    // simulateTouch(webView, 0.5f, 0.5f);
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 }else if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
                     // 根据按键重复次数判断是长按还是短按
