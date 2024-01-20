@@ -133,9 +133,9 @@ public class MainActivity extends AppCompatActivity {
 
         boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
         Log.d("canLoadX5", String.valueOf(canLoadX5));
-        if (!canLoadX5) {
+//        if (canLoadX5) {
             QbSdk.installLocalTbsCore(getApplicationContext(), 45738, "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
-        }
+//        }
 
         HashMap<String, Object> map = new HashMap<>(2);
         map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER, true);
