@@ -2,7 +2,7 @@
 
 
 ## 下载安装包
-从Github Release下载：https://github.com/Eanya-Tonic/CCTV_Viewer/releases
+从Github Release下载：https://github.com/Eanya-Tonic/CCTV_Viewer/releases/latest
 <br>
 从百度网盘下载：https://pan.baidu.com/s/1e5wMCorJIp9oi5yN8mJ1KA?pwd=qozp 提取码：qozp
 
