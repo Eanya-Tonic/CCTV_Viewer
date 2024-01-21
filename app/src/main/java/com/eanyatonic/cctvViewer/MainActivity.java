@@ -416,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN || event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN || event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_MENU || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
                 if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
                     // 执行上一个直播地址的操作
                     navigateToPreviousLive();
@@ -425,6 +425,52 @@ public class MainActivity extends AppCompatActivity {
                     // 执行下一个直播地址的操作
                     navigateToNextLive();
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
+                } else if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT){
+                      String scriptZoomIn =
+                              """
+                              // 获取当前页面的缩放比例
+                              function getZoom() {
+                                return parseFloat(document.body.style.zoom) || 1;
+                              }
+                                                            
+                              // 设置页面的缩放比例
+                              function setZoom(zoom) {
+                                document.body.style.zoom = zoom;
+                              }
+                                                            
+                              // 页面放大函数
+                              function zoomIn() {
+                                var zoom = getZoom();
+                                setZoom(zoom + 0.1);
+                              }
+                              
+                              zoomIn();
+                              """;
+                      webView.evaluateJavascript(scriptZoomIn, null);
+                }else if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT){
+                    String scriptZoomOut =
+                            """
+                            // 获取当前页面的缩放比例
+                            function getZoom() {
+                              return parseFloat(document.body.style.zoom) || 1;
+                            }
+                                                          
+                            // 设置页面的缩放比例
+                            function setZoom(zoom) {
+                              document.body.style.zoom = zoom;
+                            }
+                                                          
+                            // 页面缩小函数
+                            function zoomOut() {
+                              var zoom = getZoom();
+                              if (zoom > 0.2) {
+                                setZoom(zoom - 0.1);
+                              }
+                            }
+                            
+                            zoomOut();
+                            """;
+                    webView.evaluateJavascript(scriptZoomOut, null);
                 } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
 
                     if (doubleEnterPressedOnce) {
