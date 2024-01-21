@@ -658,6 +658,7 @@ public class MainActivity extends AppCompatActivity {
         // 计算缩放比例，使用 double 类型进行计算
         double scale = Math.min((double) screenWidth / 1920.0, (double) screenHeight / 1080.0) * 100;
 
+        Log.d("scale", "scale: " + scale);
         // 四舍五入并转为整数
         return (int) Math.round(scale);
     }
