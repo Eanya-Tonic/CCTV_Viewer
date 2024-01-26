@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -149,10 +150,11 @@ public class MainActivity extends AppCompatActivity {
     private boolean doubleEnterPressedOnce = false;
     private boolean doubleEnterPressedTwice = false;
 
+    private boolean isMenuOverlayVisible = false;
 
-
-
-
+    private LinearLayout menuOverlay;
+    
+    private int menuOverlaySelectedIndex = 0;
 
 
     @Override
@@ -171,6 +173,9 @@ public class MainActivity extends AppCompatActivity {
 
         // 初始化 overlayTextView
         overlayTextView = findViewById(R.id.overlayTextView);
+
+        // 初始化 菜单
+        menuOverlay = findViewById(R.id.menuOverlay);
 
         // 加载上次保存的位置
         loadLastLiveIndex();
@@ -351,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 启动定时任务，每隔一定时间执行一次
         startPeriodicTask();
+
     }
 
     // 频道选择列表
@@ -391,6 +397,19 @@ public class MainActivity extends AppCompatActivity {
 
     // 获取 div 元素的 display 属性并执行相应的操作
     private void getDivDisplayPropertyAndDoSimulateTouch() {
+        // 获取当前获得焦点的 View
+        View focusedView = getCurrentFocus();
+
+        if (focusedView != null) {
+            // 输出当前获得焦点的 View 的信息
+            Log.d("Focus", "Focused View: " + focusedView.getClass().getSimpleName() + ", ID: " + focusedView.getId());
+            if(!menuOverlay.hasFocus() && isMenuOverlayVisible){
+                menuOverlay.setVisibility(View.GONE);
+                isMenuOverlayVisible = false;
+            }
+        } else {
+            Log.d("Focus", "No View has focus");
+        }
         if (webView != null) {
             if(currentLiveIndex <= 19){
                 webView.evaluateJavascript("document.getElementById('play_or_pause_play_player').style.display", value -> {
@@ -416,101 +435,39 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN || event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_MENU || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
-                    // 执行上一个直播地址的操作
-                    navigateToPreviousLive();
-                    return true;  // 返回 true 表示事件已处理，不传递给 WebView
-                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                    // 执行下一个直播地址的操作
-                    navigateToNextLive();
-                    return true;  // 返回 true 表示事件已处理，不传递给 WebView
-                } else if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT){
-                      String scriptZoomIn =
-                              """
-                              // 获取当前页面的缩放比例
-                              function getZoom() {
-                                return parseFloat(document.body.style.zoom) || 1;
-                              }
-                                                            
-                              // 设置页面的缩放比例
-                              function setZoom(zoom) {
-                                document.body.style.zoom = zoom;
-                              }
-                                                            
-                              // 页面放大函数
-                              function zoomIn() {
-                                var zoom = getZoom();
-                                setZoom(zoom + 0.1);
-                              }
-                              
-                              zoomIn();
-                              """;
-                      webView.evaluateJavascript(scriptZoomIn, null);
-                }else if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT){
-                    String scriptZoomOut =
-                            """
-                            // 获取当前页面的缩放比例
-                            function getZoom() {
-                              return parseFloat(document.body.style.zoom) || 1;
-                            }
-                                                          
-                            // 设置页面的缩放比例
-                            function setZoom(zoom) {
-                              document.body.style.zoom = zoom;
-                            }
-                                                          
-                            // 页面缩小函数
-                            function zoomOut() {
-                              var zoom = getZoom();
-                              if (zoom > 0.2) {
-                                setZoom(zoom - 0.1);
-                              }
-                            }
-                            
-                            zoomOut();
-                            """;
-                    webView.evaluateJavascript(scriptZoomOut, null);
-                } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
-
-                    if (doubleEnterPressedOnce) {
-                        // 双击操作
-
-                        String script1 =
-                                """   
-                                console.log('点击全屏按钮');
-                                document.querySelector('#player_pagefullscreen_yes_player').click();
-                                """;
-
-                        String script2 =
-                                """
-                                console.log('点击全屏按钮');
-                                if(document.querySelector('.videoFull').id == ''){
-                                    document.querySelector('.videoFull').click();
-                                }else{
-                                    document.querySelector('.videoFull_ac').click();
-                                }
-                                """;
-
-                        if(currentLiveIndex <= 19){
-                            webView.evaluateJavascript(script1, null);
-                        } else if (currentLiveIndex <= 40) {
-                            new Handler().postDelayed(() -> {
-                                webView.evaluateJavascript(script2, null);
-                            }, 500);
+            if (menuOverlay.hasFocus()) {
+                // menuOverlay具有焦点
+                if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                    // 按下返回键
+                    showMenuOverlay();
+                    return true;
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                    // 方向键,切换五个按钮选择
+                    if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+                        if (menuOverlaySelectedIndex == 0) {
+                            menuOverlaySelectedIndex = 5;
+                        } else {
+                            menuOverlaySelectedIndex--;
                         }
-
-                        doubleEnterPressedTwice = true;
-                        return true;  // 返回 true 表示事件已处理，不传递给 WebView
+                    } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                        if (menuOverlaySelectedIndex == 5) {
+                            menuOverlaySelectedIndex = 0;
+                        } else {
+                            menuOverlaySelectedIndex++;
+                        }
                     }
-
-                    doubleEnterPressedOnce = true;
-
-                    new Handler().postDelayed(() -> {
-                        doubleEnterPressedOnce = false;
-                        if(!doubleEnterPressedTwice) {
-
-                            // 执行暂停操作
+                    menuOverlay.getChildAt(menuOverlaySelectedIndex).requestFocus();
+                    return true;
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    // 中间键,执行按钮操作
+                    switch (menuOverlaySelectedIndex) {
+                        case 0:
+                            // 刷新页面
+                            webView.reload();
+                            showMenuOverlay();
+                            break;
+                        case 1:
+                            // 播放
                             if(currentLiveIndex <= 19){
                                 simulateTouch(webView, 0.5f, 0.5f);
                             } else if (currentLiveIndex <= 40) {
@@ -524,56 +481,172 @@ public class MainActivity extends AppCompatActivity {
                                         """;
                                 webView.evaluateJavascript(scriptPause, null);
                             }
-                            // 显示节目列表
-                            showOverlay(channelNames[currentLiveIndex] + "\n" + info);
-                        }
-                        doubleEnterPressedTwice = false;
-                    }, 1000);
+                            showMenuOverlay();
+                            break;
+                        case 2:
+                            // 切换全屏
+                            String script1 =
+                                    """   
+                                    console.log('点击全屏按钮');
+                                    document.querySelector('#player_pagefullscreen_yes_player').click();
+                                    """;
 
-                    return true;  // 返回 true 表示事件已处理，不传递给 WebView
-                }else if (event.getKeyCode() == KeyEvent.KEYCODE_MENU) {
-                    if (doubleMenuPressedOnce) {
-                        // 双击菜单键操作
-                        // 刷新 WebView 页面
-                        if (webView != null) {
-                            webView.reload();
-                        }
-                        doubleMenuPressedTwice = true;
-                        return true;  // 返回 true 表示事件已处理，不传递给 WebView
+                            String script2 =
+                                    """
+                                    console.log('点击全屏按钮');
+                                    if(document.querySelector('.videoFull').id == ''){
+                                        document.querySelector('.videoFull').click();
+                                    }else{
+                                        document.querySelector('.videoFull_ac').click();
+                                    }
+                                    """;
+
+                            if(currentLiveIndex <= 19){
+                                webView.evaluateJavascript(script1, null);
+                            } else if (currentLiveIndex <= 40) {
+                                new Handler().postDelayed(() -> {
+                                    webView.evaluateJavascript(script2, null);
+                                }, 500);
+                            }
+                            break;
+                        case 3:
+                            // 放大
+                            String scriptZoomIn =
+                                    """
+                                    // 获取当前页面的缩放比例
+                                    function getZoom() {
+                                      return parseFloat(document.body.style.zoom) || 1;
+                                    }
+                                                                  
+                                    // 设置页面的缩放比例
+                                    function setZoom(zoom) {
+                                      document.body.style.zoom = zoom;
+                                    }
+                                                                  
+                                    // 页面放大函数
+                                    function zoomIn() {
+                                      var zoom = getZoom();
+                                      setZoom(zoom + 0.1);
+                                    }
+                                    
+                                    zoomIn();
+                                    """;
+                            webView.evaluateJavascript(scriptZoomIn, null);
+                            break;
+                        case 4:
+                            // 缩小
+                            String scriptZoomOut =
+                                    """
+                                    // 获取当前页面的缩放比例
+                                    function getZoom() {
+                                      return parseFloat(document.body.style.zoom) || 1;
+                                    }
+                                                                  
+                                    // 设置页面的缩放比例
+                                    function setZoom(zoom) {
+                                      document.body.style.zoom = zoom;
+                                    }
+                                                                  
+                                    // 页面缩小函数
+                                    function zoomOut() {
+                                      var zoom = getZoom();
+                                      if (zoom > 0.2) {
+                                        setZoom(zoom - 0.1);
+                                      }
+                                    }
+                                    
+                                    zoomOut();
+                                    """;
+                            webView.evaluateJavascript(scriptZoomOut, null);
+                            break;
+                        case 5:
+                            // 退出
+                            System.exit(0);
+                            break;
                     }
-
-                    doubleMenuPressedOnce = true;
-
-                    new Handler().postDelayed(() -> {
-                        doubleMenuPressedOnce = false;
-                        if(!doubleMenuPressedTwice) {
-                            // 单击菜单键操作
-                            // 显示频道列表
-                            showChannelList();
-                        }
-                        doubleMenuPressedTwice = false;
-                    }, 1000);
-
+                    return true;
+                }
+                return true;
+            }
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+                // 执行上一个直播地址的操作
+                navigateToPreviousLive();
+                return true;  // 返回 true 表示事件已处理，不传递给 WebView
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                // 执行下一个直播地址的操作
+                navigateToNextLive();
+                return true;  // 返回 true 表示事件已处理，不传递给 WebView
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+                // 显示节目列表
+                showOverlay(channelNames[currentLiveIndex] + "\n" + info);
+                return true;  // 返回 true 表示事件已处理，不传递给 WebView
+            }else if (event.getKeyCode() == KeyEvent.KEYCODE_MENU || event.getKeyCode() == KeyEvent.KEYCODE_M) {
+                if (doubleMenuPressedOnce) {
+                    // 双击菜单键操作
+                    // 刷新 WebView 页面
+                    if (webView != null) {
+                        webView.reload();
+                    }
+                    doubleMenuPressedTwice = true;
                     return true;  // 返回 true 表示事件已处理，不传递给 WebView
                 }
+
+                doubleMenuPressedOnce = true;
+
+                new Handler().postDelayed(() -> {
+                    doubleMenuPressedOnce = false;
+                    if(!doubleMenuPressedTwice) {
+                        // 单击菜单键操作
+                        // 显示频道列表
+                        // showChannelList();
+                        showMenuOverlay();
+                    }
+                    doubleMenuPressedTwice = false;
+                }, 1000);
+
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
-            }else if (event.getKeyCode() >= KeyEvent.KEYCODE_0 && event.getKeyCode() <= KeyEvent.KEYCODE_9) {
-                int numericKey = event.getKeyCode() - KeyEvent.KEYCODE_0;
-
-                // 将按下的数字键追加到缓冲区
-                digitBuffer.append(numericKey);
-
-                // 使用 Handler 来在超时后处理输入的数字
-                new Handler().postDelayed(() -> handleNumericInput(), DIGIT_TIMEOUT);
-
-                // 更新显示正在输入的数字的 TextView
-                updateInputTextView();
-
-                return true;  // 事件已处理，不传递给 WebView
             }
+            return true;  // 返回 true 表示事件已处理，不传递给 WebView
+        }else if (event.getKeyCode() >= KeyEvent.KEYCODE_0 && event.getKeyCode() <= KeyEvent.KEYCODE_9) {
+            int numericKey = event.getKeyCode() - KeyEvent.KEYCODE_0;
+
+            // 将按下的数字键追加到缓冲区
+            digitBuffer.append(numericKey);
+
+            // 使用 Handler 来在超时后处理输入的数字
+            new Handler().postDelayed(() -> handleNumericInput(), DIGIT_TIMEOUT);
+
+            // 更新显示正在输入的数字的 TextView
+            updateInputTextView();
+
+            return true;  // 事件已处理，不传递给 WebView
+        }else if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return true;
+            }
+
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "再按一次返回键退出应用", Toast.LENGTH_SHORT).show();
+
+            new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
+            // 如果两秒内再次按返回键，则退出应用
         }
 
         return super.dispatchKeyEvent(event);  // 如果不处理，调用父类的方法继续传递事件
+    }
+
+    // 显示底部菜单
+    private void showMenuOverlay() {
+        if(!isMenuOverlayVisible) {
+            findViewById(R.id.menuOverlay).requestFocus();
+            findViewById(R.id.menuOverlay).setVisibility(View.VISIBLE);
+            isMenuOverlayVisible = true;
+        }else {
+            findViewById(2131296624).requestFocus();
+            findViewById(R.id.menuOverlay).setVisibility(View.GONE);
+            isMenuOverlayVisible = false;
+        }
     }
 
     private void handleNumericInput() {
@@ -679,20 +752,6 @@ public class MainActivity extends AppCompatActivity {
         // 释放事件对象
         downEvent.recycle();
         upEvent.recycle();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "再按一次返回键退出应用", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
-        // 如果两秒内再次按返回键，则退出应用
     }
 
     private void showOverlay(String channelInfo) {

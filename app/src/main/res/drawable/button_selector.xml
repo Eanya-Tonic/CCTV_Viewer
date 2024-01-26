@@ -1,0 +1,14 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 按钮被选中时的状态 -->
+    <item android:state_focused="true" android:state_pressed="false">
+        <shape android:shape="oval">
+            <solid android:color="#FF5DA9E9"/> <!-- 蓝色 -->
+        </shape>
+    </item>
+    <!-- 默认状态 -->
+    <item android:state_focused="false" android:state_pressed="false">
+        <shape android:shape="oval">
+            <solid android:color="#FFEFEFEF"/> <!-- 默认颜色 -->
+        </shape>
+    </item>
+</selector>
