@@ -13,13 +13,18 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.navigation.NavigationView;
 import com.tencent.smtt.export.external.TbsCoreSettings;
 import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.smtt.sdk.WebChromeClient;
@@ -144,17 +149,20 @@ public class MainActivity extends AppCompatActivity {
     // 在 MainActivity 中添加一个 Handler
     private final Handler handler = new Handler();
 
-    private boolean doubleMenuPressedOnce = false;
-    private boolean doubleMenuPressedTwice = false;
-
-    private boolean doubleEnterPressedOnce = false;
-    private boolean doubleEnterPressedTwice = false;
-
     private boolean isMenuOverlayVisible = false;
+    private boolean isDrawerOverlayVisible = false;
 
     private LinearLayout menuOverlay;
+    private  LinearLayout DrawerLayout;
+    private  LinearLayout DrawerLayoutDetailed;
+    private LinearLayout SubMenuCCTV;
+    private LinearLayout SubMenuLocal;
+    private TextView CoreText;
     
     private int menuOverlaySelectedIndex = 0;
+    private  int DrawerLayoutSelectedIndex = 0;
+    private int SubMenuCCTVSelectedIndex = 0;
+    private int SubMenuLocalSelectedIndex = 0;
 
 
     @Override
@@ -177,6 +185,23 @@ public class MainActivity extends AppCompatActivity {
         // 初始化 菜单
         menuOverlay = findViewById(R.id.menuOverlay);
 
+        // 初始化 DrawerLayout
+        DrawerLayout = findViewById(R.id.DrawerLayout);
+
+        // 初始化 DrawerLayoutDetailed
+        DrawerLayoutDetailed = findViewById(R.id.DrawerLayoutDetailed);
+
+        // 初始化 CCTV 子菜单
+        SubMenuCCTV = findViewById(R.id.subMenuCCTV);
+
+        // 初始化 Local 子菜单
+        SubMenuLocal = findViewById(R.id.subMenuLocal);
+
+        // 初始化 CoreText
+        CoreText = findViewById(R.id.CoreText);
+
+
+
         // 加载上次保存的位置
         loadLastLiveIndex();
 
@@ -184,6 +209,10 @@ public class MainActivity extends AppCompatActivity {
 
         boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
         Log.d("canLoadX5", String.valueOf(canLoadX5));
+        if(canLoadX5) {
+
+            CoreText.setText("当前程序运行在腾讯X5内核上");
+        }
 //        if (canLoadX5) {
             QbSdk.installLocalTbsCore(getApplicationContext(), 45738, "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
 //        }
@@ -359,28 +388,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // 频道选择列表
-    private void showChannelList() {
-        // 构建频道列表对话框
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("选择频道");
-
-        // 设置频道列表项
-        builder.setItems(channelNames, (dialog, which) -> {
-            // 在此处处理选择的频道
-            currentLiveIndex = which;
-            loadLiveUrl();
-            saveCurrentLiveIndex(); // 保存当前位置
-        });
-
-        // 显示对话框
-        builder.create().show();
-    }
-
     // 启动自动播放定时任务
     private void startPeriodicTask() {
         // 使用 postDelayed 方法设置定时任务
-        handler.postDelayed(periodicTask, 5000); // 5000 毫秒，即 5 秒钟
+        handler.postDelayed(periodicTask, 2000); // 5000 毫秒，即 5 秒钟
     }
 
     // 定时任务具体操作
@@ -391,7 +402,7 @@ public class MainActivity extends AppCompatActivity {
             getDivDisplayPropertyAndDoSimulateTouch();
 
             // 完成后再次调度定时任务
-            handler.postDelayed(this, 5000); // 5000 毫秒，即 5 秒钟
+            handler.postDelayed(this, 2000); // 5000 毫秒，即 5 秒钟
         }
     };
 
@@ -401,11 +412,18 @@ public class MainActivity extends AppCompatActivity {
         View focusedView = getCurrentFocus();
 
         if (focusedView != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
             // 输出当前获得焦点的 View 的信息
-            Log.d("Focus", "Focused View: " + focusedView.getClass().getSimpleName() + ", ID: " + focusedView.getId());
+            Log.d("Focus", "Focused View: " + focusedView.getClass().getName() + ", ID: " + focusedView.getId());
             if(!menuOverlay.hasFocus() && isMenuOverlayVisible){
                 menuOverlay.setVisibility(View.GONE);
                 isMenuOverlayVisible = false;
+            }
+            if((!DrawerLayout.hasFocus() && !DrawerLayoutDetailed.hasFocus()) && isDrawerOverlayVisible){
+                DrawerLayout.setVisibility(View.GONE);
+                DrawerLayoutDetailed.setVisibility(View.GONE);
+                isDrawerOverlayVisible = false;
             }
         } else {
             Log.d("Focus", "No View has focus");
@@ -423,6 +441,9 @@ public class MainActivity extends AppCompatActivity {
                 String scriptPlay =
                     """
                     try{
+                    if(document.querySelector('.voice.on').style.display == 'none'){
+                        document.querySelector('.voice.on').click();
+                    }
                     document.querySelector('.play.play1').click();
                     } catch(e) {
                     }
@@ -568,6 +589,136 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             }
+            if(DrawerLayout.hasFocus() && !SubMenuCCTV.hasFocus() && !SubMenuLocal.hasFocus() && !DrawerLayoutDetailed.hasFocus()){
+                // DrawerLayout具有焦点
+                if(event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT){
+                    // 按下返回键
+                    showChannelList();
+                    return true;
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                    // 方向键,切换频道选择
+                    if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+                        if (DrawerLayoutSelectedIndex == 0) {
+                            DrawerLayoutSelectedIndex = 1;
+                        } else {
+                            DrawerLayoutSelectedIndex--;
+                        }
+                    } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                        if (DrawerLayoutSelectedIndex == 1) {
+                            DrawerLayoutSelectedIndex = 0;
+                        } else {
+                            DrawerLayoutSelectedIndex++;
+                        }
+                    }
+                    DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
+                    return true;
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                    // 中间键,执行按钮操作
+                    switch (DrawerLayoutSelectedIndex) {
+                        case 0:
+                            // 中央频道
+                            DrawerLayoutDetailed.setVisibility(View.VISIBLE);
+                            findViewById(R.id.subMenuCCTV).setVisibility(View.VISIBLE);
+                            findViewById(R.id.CCTVScroll).setVisibility(View.VISIBLE);
+                            findViewById(R.id.subMenuLocal).setVisibility(View.GONE);
+                            findViewById(R.id.LocalScroll).setVisibility(View.GONE);
+                            SubMenuCCTV.getChildAt(SubMenuCCTVSelectedIndex).requestFocus();
+                            break;
+                        case 1:
+                            // 地方频道
+                            DrawerLayoutDetailed.setVisibility(View.VISIBLE);
+                            findViewById(R.id.subMenuCCTV).setVisibility(View.GONE);
+                            findViewById(R.id.CCTVScroll).setVisibility(View.GONE);
+                            findViewById(R.id.subMenuLocal).setVisibility(View.VISIBLE);
+                            findViewById(R.id.LocalScroll).setVisibility(View.VISIBLE);
+                            SubMenuLocal.getChildAt(SubMenuLocalSelectedIndex).requestFocus();
+                            break;
+                    }
+                    return true;
+                }
+            }else if(SubMenuCCTV.hasFocus())
+            {
+                if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                    // 按下返回键
+                    DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
+                    SubMenuCCTV.setVisibility(View.GONE);
+                    DrawerLayoutDetailed.setVisibility(View.GONE);
+                    findViewById(R.id.CCTVScroll).setVisibility(View.GONE);
+                    return true;
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
+                    SubMenuCCTV.setVisibility(View.GONE);
+                    DrawerLayoutDetailed.setVisibility(View.GONE);
+                    findViewById(R.id.CCTVScroll).setVisibility(View.GONE);
+                    return true;
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                    // 方向键,切换频道选择
+                    if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+                        if (SubMenuCCTVSelectedIndex == 0) {
+                            SubMenuCCTVSelectedIndex = 19;
+                        } else {
+                            SubMenuCCTVSelectedIndex--;
+                        }
+                    } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                        if (SubMenuCCTVSelectedIndex == 19) {
+                            SubMenuCCTVSelectedIndex = 0;
+                        } else {
+                            SubMenuCCTVSelectedIndex++;
+                        }
+                    }
+                    SubMenuCCTV.getChildAt(SubMenuCCTVSelectedIndex).requestFocus();
+                    return true;
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                    // 中间键,执行按钮操作
+                    currentLiveIndex = SubMenuCCTVSelectedIndex;
+                    loadLiveUrl();
+                    saveCurrentLiveIndex();
+                    showChannelList();
+                    return true;
+                }
+            } else if (SubMenuLocal.hasFocus())
+            {
+                if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                    // 按下返回键
+                    DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
+                    SubMenuLocal.setVisibility(View.GONE);
+                    DrawerLayoutDetailed.setVisibility(View.GONE);
+                    findViewById(R.id.LocalScroll).setVisibility(View.GONE);
+                    return true;
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+                    DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
+                    SubMenuLocal.setVisibility(View.GONE);
+                    DrawerLayoutDetailed.setVisibility(View.GONE);
+                    findViewById(R.id.LocalScroll).setVisibility(View.GONE);
+                    return true;
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                    // 方向键,切换频道选择
+                    if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+                        if (SubMenuLocalSelectedIndex == 0) {
+                            SubMenuLocalSelectedIndex = 20;
+                        } else {
+                            SubMenuLocalSelectedIndex--;
+                        }
+                    } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                        if (SubMenuLocalSelectedIndex == 20) {
+                            SubMenuLocalSelectedIndex = 0;
+                        } else {
+                            SubMenuLocalSelectedIndex++;
+                        }
+                    }
+                    SubMenuLocal.getChildAt(SubMenuLocalSelectedIndex).requestFocus();
+                    return true;
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER || event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                    // 中间键,执行按钮操作
+                    currentLiveIndex = SubMenuLocalSelectedIndex + 20;
+                    loadLiveUrl();
+                    saveCurrentLiveIndex();
+                    showChannelList();
+                    return true;
+                }
+            } else if (DrawerLayoutDetailed.hasFocus()) {
+                return true;
+            }
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
                 // 执行上一个直播地址的操作
                 navigateToPreviousLive();
@@ -577,32 +728,14 @@ public class MainActivity extends AppCompatActivity {
                 navigateToNextLive();
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+                // 换台菜单
+                showChannelList();
                 // 显示节目列表
                 showOverlay(channelNames[currentLiveIndex] + "\n" + info);
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
             }else if (event.getKeyCode() == KeyEvent.KEYCODE_MENU || event.getKeyCode() == KeyEvent.KEYCODE_M) {
-                if (doubleMenuPressedOnce) {
-                    // 双击菜单键操作
-                    // 刷新 WebView 页面
-                    if (webView != null) {
-                        webView.reload();
-                    }
-                    doubleMenuPressedTwice = true;
-                    return true;  // 返回 true 表示事件已处理，不传递给 WebView
-                }
-
-                doubleMenuPressedOnce = true;
-
-                new Handler().postDelayed(() -> {
-                    doubleMenuPressedOnce = false;
-                    if(!doubleMenuPressedTwice) {
-                        // 单击菜单键操作
-                        // 显示频道列表
-                        // showChannelList();
-                        showMenuOverlay();
-                    }
-                    doubleMenuPressedTwice = false;
-                }, 1000);
+                // 显示菜单
+                showMenuOverlay();
 
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
             }
@@ -643,9 +776,38 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.menuOverlay).setVisibility(View.VISIBLE);
             isMenuOverlayVisible = true;
         }else {
-            findViewById(2131296624).requestFocus();
+//            findViewById(R.id.main_browse_fragment).requestFocus();
             findViewById(R.id.menuOverlay).setVisibility(View.GONE);
             isMenuOverlayVisible = false;
+        }
+    }
+
+    // 频道选择列表
+    private void showChannelList() {
+        // 显示频道抽屉
+        if(!isDrawerOverlayVisible) {
+            DrawerLayoutDetailed.setVisibility(View.VISIBLE);
+            DrawerLayout.setVisibility(View.VISIBLE);
+            isDrawerOverlayVisible = true;
+            if(currentLiveIndex < 20) {
+                SubMenuCCTV.setVisibility(View.VISIBLE);
+                findViewById(R.id.CCTVScroll).setVisibility(View.VISIBLE);
+                SubMenuCCTV.getChildAt(currentLiveIndex).requestFocus();
+                SubMenuCCTVSelectedIndex = currentLiveIndex;
+            }else {
+                SubMenuLocal.setVisibility(View.VISIBLE);
+                findViewById(R.id.LocalScroll).setVisibility(View.VISIBLE);
+                SubMenuLocal.getChildAt(currentLiveIndex - 20).requestFocus();
+                SubMenuLocalSelectedIndex = currentLiveIndex - 20;
+            }
+        }else {
+            DrawerLayout.setVisibility(View.GONE);
+            SubMenuCCTV.setVisibility(View.GONE);
+            SubMenuLocal.setVisibility(View.GONE);
+            findViewById(R.id.LocalScroll).setVisibility(View.GONE);
+            findViewById(R.id.CCTVScroll).setVisibility(View.GONE);
+            DrawerLayoutDetailed.setVisibility(View.GONE);
+            isDrawerOverlayVisible = false;
         }
     }
 

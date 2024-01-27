@@ -39,7 +39,6 @@
         android:visibility="gone" />
 
 
-
     <RelativeLayout
         android:id="@+id/loadingOverlay"
         android:layout_width="match_parent"
@@ -52,10 +51,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textColor="#FFFFFF"
-            android:textSize="36sp"
+            android:layout_marginBottom="16dp"
             android:text="正在切换频道..."
-            android:layout_marginBottom="16dp"/>
+            android:textColor="#FFFFFF"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/CoreText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="16dp"
+            android:paddingTop="100dp"
+            android:text="当前程序运行在系统WebView上"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
 
     </RelativeLayout>
 
@@ -213,6 +223,507 @@
                 android:text="退出程序"
                 android:textColor="#FFFFFF" />
         </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- 换台抽屉 -->
+    <LinearLayout
+        android:id="@+id/DrawerLayout"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#88000000"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:padding="4dp"
+        android:visibility="gone">
+
+        <!-- 大类 -->
+        <Button
+            android:id="@+id/categoryCCTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="@drawable/channel_selector"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:padding="16dp"
+            android:text="央视频道"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/categoryLocal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:background="@drawable/channel_selector"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:padding="16dp"
+            android:text="地方频道"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+    <!-- 换台抽屉 -->
+    <LinearLayout
+        android:id="@+id/DrawerLayoutDetailed"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:layout_toRightOf="@+id/DrawerLayout"
+        android:background="#88000000"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:padding="4dp"
+        android:visibility="gone">
+
+
+        <!-- 中央台 -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/CCTVScroll"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/subMenuCCTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/channelCCTV1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-1 综合"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-2 财经"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-3 综艺"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-4 中文国际"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-5 体育"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-6 电影"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-7 军事农业"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-8 电视剧"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV9"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-9 纪录"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-10 科教"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV11"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-11 戏曲"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV12"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-12 社会与法"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV13"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-13 新闻"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV14"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-14 少儿"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV15"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-15 音乐"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV16"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-16 奥林匹克"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV17"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-17 农业农村"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTV5plus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV-5+ 体育赛事"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTVEuro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV Europe"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelCCTVAmerica"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="CCTV America"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- 地方台 -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/LocalScroll"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/subMenuLocal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/channelLocal1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="北京卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="江苏卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="东方卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="浙江卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="湖南卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="湖北卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="广东卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="广西卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal9"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="黑龙江卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="海南卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal11"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="重庆卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal12"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="深圳卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal13"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="四川卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal14"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="河南卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal15"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="福建东南卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal16"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="贵州卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal17"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="江西卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal18"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="辽宁卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal19"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="安徽卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="河北卫视"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/channelLocal21"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/detailed_channel_selector"
+                    android:padding="16dp"
+                    android:text="山西卫视"
+                    android:textColor="@android:color/white" />
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 
