@@ -229,7 +229,7 @@
     <!-- 换台抽屉 -->
     <LinearLayout
         android:id="@+id/DrawerLayout"
-        android:layout_width="150dp"
+        android:layout_width="110dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="#88000000"
@@ -269,7 +269,7 @@
     <!-- 换台抽屉 -->
     <LinearLayout
         android:id="@+id/DrawerLayoutDetailed"
-        android:layout_width="150dp"
+        android:layout_width="160dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:layout_toRightOf="@+id/DrawerLayout"
