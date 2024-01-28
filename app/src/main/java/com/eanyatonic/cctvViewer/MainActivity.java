@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+// X5内核代码
 import com.tencent.smtt.export.external.TbsCoreSettings;
 import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.smtt.sdk.WebChromeClient;
@@ -29,9 +30,16 @@ import com.tencent.smtt.sdk.WebViewClient;
 
 import java.util.HashMap;
 
+// WebView内核代码
+//import android.webkit.SslErrorHandler;
+//import android.webkit.WebChromeClient;
+//import android.webkit.WebSettings;
+//import android.webkit.WebView;
+//import android.webkit.WebViewClient;
+
 public class MainActivity extends AppCompatActivity {
 
-    private com.tencent.smtt.sdk.WebView webView; // 导入 X5 WebView
+    private WebView webView; // 导入 WebView
 
     private String[] liveUrls = {
             "https://tv.cctv.com/live/cctv1/",
@@ -200,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
         // 加载上次保存的位置
         loadLastLiveIndex();
 
+        // X5内核代码
         copyAssets(this, "045738_x5.tbs.apk", "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
 
         boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
@@ -219,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // 配置 WebView 设置
-        com.tencent.smtt.sdk.WebSettings webSettings = webView.getSettings();
+        WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setDatabaseEnabled(true);
@@ -229,19 +238,29 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // X5内核代码
             webSettings.setMixedContentMode(com.tencent.smtt.sdk.WebSettings.LOAD_NORMAL);
+            // 系统WebView内核代码
+            //webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
         // 设置 WebViewClient 和 WebChromeClient
-        webView.setWebViewClient(new com.tencent.smtt.sdk.WebViewClient() {
+        webView.setWebViewClient(new WebViewClient() {
+            // X5内核代码
             @Override
             public void onReceivedSslError(com.tencent.smtt.sdk.WebView webView, com.tencent.smtt.export.external.interfaces.SslErrorHandler handler, com.tencent.smtt.export.external.interfaces.SslError error) {
                 handler.proceed(); // 忽略 SSL 错误
             }
 
+            // 系统Webview内核代码
+            //@Override
+            //public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            //    handler.proceed(); // 忽略 SSL 错误
+            //}
+
             // 设置 WebViewClient，监听页面加载完成事件
             @Override
-            public void onPageFinished(com.tencent.smtt.sdk.WebView view, String url) {
+            public void onPageFinished(WebView view, String url) {
                     // 页面加载完成后执行 JavaScript 脚本
 
                     // 清空info
@@ -386,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
     // 启动自动播放定时任务
     private void startPeriodicTask() {
         // 使用 postDelayed 方法设置定时任务
-        handler.postDelayed(periodicTask, 2000); // 5000 毫秒，即 5 秒钟
+        handler.postDelayed(periodicTask, 2000); // 2000 毫秒，即 2 秒钟
     }
 
     // 定时任务具体操作
@@ -397,7 +416,7 @@ public class MainActivity extends AppCompatActivity {
             getDivDisplayPropertyAndDoSimulateTouch();
 
             // 完成后再次调度定时任务
-            handler.postDelayed(this, 2000); // 5000 毫秒，即 5 秒钟
+            handler.postDelayed(this, 2000); // 2000 毫秒，即 2 秒钟
         }
     };
 
