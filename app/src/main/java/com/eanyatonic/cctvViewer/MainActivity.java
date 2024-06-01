@@ -329,11 +329,11 @@ public class MainActivity extends AppCompatActivity {
                                         console.log('点击分辨率按钮');
                                         var elem = document.querySelector('#resolution_item_720_player');
                                         try {
-                                        elem.click();
-                                        }
+                                            elem.click();
+                                            }
                                         catch (error) {
-                                        clearInterval(interval);
-                                        }
+                                            clearInterval(interval);
+                                            }
                                         clearInterval(interval);
                                     }, 3000);
                                     """;
