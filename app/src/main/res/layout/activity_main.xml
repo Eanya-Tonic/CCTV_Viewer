@@ -332,7 +332,7 @@
                     android:layout_margin="4dp"
                     android:background="@drawable/detailed_channel_selector"
                     android:padding="16dp"
-                    android:text="CCTV-4 中文国际"
+                    android:text="CCTV-4 中文国际（亚）"
                     android:textColor="@android:color/white" />
 
                 <Button
@@ -362,7 +362,7 @@
                     android:layout_margin="4dp"
                     android:background="@drawable/detailed_channel_selector"
                     android:padding="16dp"
-                    android:text="CCTV-7 军事农业"
+                    android:text="CCTV-7 国防军事"
                     android:textColor="@android:color/white" />
 
                 <Button
@@ -482,7 +482,7 @@
                     android:layout_margin="4dp"
                     android:background="@drawable/detailed_channel_selector"
                     android:padding="16dp"
-                    android:text="CCTV Europe"
+                    android:text="CCTV-4 中文国际（欧）"
                     android:textColor="@android:color/white" />
 
                 <Button
@@ -492,7 +492,7 @@
                     android:layout_margin="4dp"
                     android:background="@drawable/detailed_channel_selector"
                     android:padding="16dp"
-                    android:text="CCTV America"
+                    android:text="CCTV-4 中文国际（美）"
                     android:textColor="@android:color/white" />
 
             </LinearLayout>
