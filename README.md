@@ -38,13 +38,13 @@
 
 3 CCTV-3 综艺
 
-4 CCTV-4 中文国际
+4 CCTV-4 中文国际（亚）
 
 5 CCTV-5 体育
 
 6 CCTV-6 电影
 
-7 CCTV-7 军事农业
+7 CCTV-7 国防军事
 
 8 CCTV-8 电视剧
 
@@ -68,9 +68,9 @@
 
 18 CCTV-5+ 体育赛事
 
-19 CCTV Europe
+19 CCTV-4 中文国际（欧）
 
-20 CCTV America
+20 CCTV-4 中文国际（美）
 
 21 北京卫视
 
