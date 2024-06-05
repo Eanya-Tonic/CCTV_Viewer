@@ -174,8 +174,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 获取 AudioManager 实例
-        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 
         // 初始化 WebView
         webView = findViewById(R.id.webView);
@@ -473,6 +471,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+
+        // 获取 AudioManager 实例
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (menuOverlay.hasFocus()) {
                 // menuOverlay具有焦点
