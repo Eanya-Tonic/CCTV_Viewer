@@ -214,7 +214,9 @@ public class MainActivity extends AppCompatActivity {
         // 加载上次保存的位置
         loadLastLiveIndex();
 
-        CoreText.setText("当前程序运行在系统WebView上，版本号：" + WebView.getCurrentWebViewPackage().versionName);
+        if (WebView.getCurrentWebViewPackage().versionName) {
+            CoreText.setText("当前程序运行在系统WebView上，版本号：" + WebView.getCurrentWebViewPackage().versionName);
+        }
 
         // X5内核代码
         copyAssets(this, "045738_x5.tbs.apk", "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
