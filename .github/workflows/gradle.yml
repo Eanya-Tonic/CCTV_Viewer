@@ -1,0 +1,60 @@
+name: Java CI
+
+on:
+  push:
+  workflow_dispatch:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+
+    - name: Build with Gradle
+      run: |
+        bash ./gradlew build --no-daemon
+
+    - name: Get short SHA
+      run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      
+    - uses: actions/upload-artifact@v4
+      with:
+          name: CCTV_Viewer_${{ env.SHORT_SHA }}
+          path: ./app/build/outputs/apk/debug/app-debug.apk
+
+  build-X5:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'zulu'
+    
+    - name: Unzip X5.zip
+      run: unzip X5.zip -d app/src/main
+
+    - name: Build with Gradle
+      run: |
+        bash ./gradlew build --no-daemon
+
+    - name: Get short SHA
+      run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      
+    - uses: actions/upload-artifact@v4
+      with:
+          name: CCTV_Viewer_${{ env.SHORT_SHA }}-X5
+          path: ./app/build/outputs/apk/debug/app-debug.apk
