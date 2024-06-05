@@ -4,6 +4,7 @@ import static com.eanyatonic.cctvViewer.FileUtils.copyAssets;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -172,6 +173,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 获取 AudioManager 实例
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 
         // 初始化 WebView
         webView = findViewById(R.id.webView);
@@ -476,7 +480,11 @@ public class MainActivity extends AppCompatActivity {
                     // 按下返回键
                     showMenuOverlay();
                     return true;
-                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
+                    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) { 
                     // 方向键,切换五个按钮选择
                     if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                         if (menuOverlaySelectedIndex == 0) {
