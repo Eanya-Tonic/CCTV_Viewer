@@ -486,7 +486,7 @@ public class MainActivity extends AppCompatActivity {
                     // 按下返回键
                     showMenuOverlay();
                     return true;
-                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) { 
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
                     // 方向键,切换五个按钮选择
                     if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                         if (menuOverlaySelectedIndex == 0) {
