@@ -214,8 +214,9 @@ public class MainActivity extends AppCompatActivity {
         // 加载上次保存的位置
         loadLastLiveIndex();
 
-        if (WebView.getCurrentWebViewPackage().versionName) {
-            CoreText.setText("当前程序运行在系统WebView上，版本号：" + WebView.getCurrentWebViewPackage().versionName);
+        boolean webViewVersion = WebView.getCurrentWebViewPackage().versionName;
+        if (webViewVersion) {
+            CoreText.setText("当前程序运行在系统WebView上，版本号：" + webViewVersion);
         }
 
         // X5内核代码
