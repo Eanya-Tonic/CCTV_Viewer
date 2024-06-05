@@ -476,16 +476,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (menuOverlay.hasFocus()) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+            } else if (menuOverlay.hasFocus()) {
                 // menuOverlay具有焦点
                 if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
                     // 按下返回键
                     showMenuOverlay();
                     return true;
-                } else if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
-                    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
-                } else if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN) {
-                    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
                 } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) { 
                     // 方向键,切换五个按钮选择
                     if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
