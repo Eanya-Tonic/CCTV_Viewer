@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setDomStorageEnabled(true);
         webSettings.setDatabaseEnabled(true);
         // webSettings.setLoadsImagesAutomatically(false); // 禁用自动加载图片
-        webSettings.setBlockNetworkImage(true); // 禁用网络图片加载
+        // webSettings.setBlockNetworkImage(true); // 禁用网络图片加载
         webSettings.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
 
         // 启用缓存
