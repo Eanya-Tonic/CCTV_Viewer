@@ -249,6 +249,9 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setBlockNetworkImage(true); // 禁用网络图片加载
         webSettings.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
 
+        // 启用缓存
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+
         // 启用 JavaScript 自动点击功能
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
 
