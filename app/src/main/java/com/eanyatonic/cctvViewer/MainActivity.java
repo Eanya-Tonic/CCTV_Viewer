@@ -344,15 +344,15 @@ public class MainActivity extends AppCompatActivity {
                                         // 休眠 50 毫秒
                                         await sleep(50);
                                                     
-                                        console.log('点击分辨率按钮');
-                                        var elem = document.querySelector('#resolution_item_720_player');
-                                        try {
-                                            elem.click();
-                                            }
-                                        catch (error) {
-                                            clearInterval(interval);
-                                            }
-                                        clearInterval(interval);
+                                        // console.log('点击分辨率按钮');
+                                        // var elem = document.querySelector('#resolution_item_720_player');
+                                        // try {
+                                        //     elem.click();
+                                        //     }
+                                        // catch (error) {
+                                        //     clearInterval(interval);
+                                        //     }
+                                        // clearInterval(interval);
                                     }, 3000);
                                     """;
 
