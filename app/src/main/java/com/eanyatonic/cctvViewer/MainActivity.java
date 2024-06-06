@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
                                         // catch (error) {
                                         //     clearInterval(interval);
                                         //     }
-                                        // clearInterval(interval);
+                                        clearInterval(interval);
                                     }, 3000);
                                     """;
 
