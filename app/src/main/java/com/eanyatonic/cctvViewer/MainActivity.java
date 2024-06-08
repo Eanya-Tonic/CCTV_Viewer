@@ -4,6 +4,7 @@ import static com.eanyatonic.cctvViewer.FileUtils.copyAssets;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout SubMenuCCTV;
     private LinearLayout SubMenuLocal;
     private TextView CoreText;
-    
+
     private int menuOverlaySelectedIndex = 0;
     private  int DrawerLayoutSelectedIndex = 0;
     private int SubMenuCCTVSelectedIndex = 0;
@@ -214,13 +215,14 @@ public class MainActivity extends AppCompatActivity {
         // 加载上次保存的位置
         loadLastLiveIndex();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // Android 7.0+
-            String webViewVersion = WebView.getCurrentWebViewPackage().versionName;
-            if (webViewVersion != null && !webViewVersion.isEmpty()) {
-                CoreText.setText("当前程序运行在系统WebView上，版本号：" + webViewVersion);
+        // https://developer.android.com/reference/android/webkit/WebView.html#getCurrentWebViewPackage()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { // Android 8.0+
+            PackageInfo pkgInfo = WebView.getCurrentWebViewPackage();
+            if (pkgInfo != null) {
+                CoreText.setText("当前程序运行在系统WebView上，版本号：" + pkgInfo.versionName);
             }
         }
-        
+
         // X5内核代码
         copyAssets(this, "045738_x5.tbs.apk", "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
 
