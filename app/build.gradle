@@ -10,8 +10,8 @@ android {
         applicationId "com.eanyatonic.cctvViewer"
         minSdk 19
         targetSdk 32
-        versionCode 17
-        versionName "1.6.1"
+        versionCode 18
+        versionName "1.6.2"
         ndk{abiFilters "armeabi", "armeabi-v7a", "x86", "mips"}
     }
 
