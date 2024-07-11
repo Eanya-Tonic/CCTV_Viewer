@@ -504,12 +504,12 @@ public class MainActivity extends AppCompatActivity {
                     // 方向键,切换五个按钮选择
                     if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                         if (menuOverlaySelectedIndex == 0) {
-                            menuOverlaySelectedIndex = 5;
+                            menuOverlaySelectedIndex = 6;
                         } else {
                             menuOverlaySelectedIndex--;
                         }
                     } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                        if (menuOverlaySelectedIndex == 5) {
+                        if (menuOverlaySelectedIndex == 6) {
                             menuOverlaySelectedIndex = 0;
                         } else {
                             menuOverlaySelectedIndex++;
@@ -619,6 +619,10 @@ public class MainActivity extends AppCompatActivity {
                             webView.evaluateJavascript(scriptZoomOut, null);
                             break;
                         case 5:
+                            // x5内核调试
+                            webView.loadUrl("http://debugx5.qq.com");
+                            break;
+                        case 6:
                             // 退出
                             System.exit(0);
                             break;
