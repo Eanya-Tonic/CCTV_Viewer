@@ -390,8 +390,9 @@ public class MainActivity extends AppCompatActivity {
 
                 new Handler().postDelayed(() -> {
                         // 模拟触摸
-                        simulateTouch(view, 0.5f, 0.5f);
-
+                        if(!canLoadX5) {
+                            simulateTouch(view, 0.5f, 0.5f);
+                        }
                         // 隐藏加载的 View
                         loadingOverlay.setVisibility(View.GONE);
 
