@@ -18,6 +18,7 @@
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/Theme.央视浏览器">
         <activity
             android:name=".MainActivity"
