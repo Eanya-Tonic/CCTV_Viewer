@@ -236,12 +236,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"> <!-- 设置水平排列 -->
+        android:orientation="horizontal">
 
         <!-- 一级菜单：大类 -->
         <LinearLayout
             android:id="@+id/DrawerLayout"
-            android:layout_width="110dp"
+            android:layout_width="190dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:background="#88000000"
@@ -262,7 +262,8 @@
                 android:focusableInTouchMode="true"
                 android:padding="16dp"
                 android:text="央视频道"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:textSize="32sp"/>
 
             <!-- 地方频道按钮 -->
             <Button
@@ -275,13 +276,14 @@
                 android:focusableInTouchMode="true"
                 android:padding="16dp"
                 android:text="地方频道"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:textSize="32sp"/>
         </LinearLayout>
 
         <!-- 二级菜单：详细频道 -->
         <LinearLayout
             android:id="@+id/DrawerLayoutDetailed"
-            android:layout_width="160dp"
+            android:layout_width="240dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:background="#88000000"

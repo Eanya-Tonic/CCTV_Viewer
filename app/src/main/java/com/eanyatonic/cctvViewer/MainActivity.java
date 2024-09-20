@@ -143,11 +143,16 @@ public class MainActivity extends AppCompatActivity {
         for (String channel : cctvChannels) {
             Button button = new Button(this);
             button.setText(channel);
-            button.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            // 创建 LayoutParams 并设置 margin
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(4, 4, 4, 4);
+            // 设置按钮属性
+            button.setLayoutParams(layoutParams);
             button.setPadding(16, 16, 16, 16);
             button.setTextColor(getResources().getColor(android.R.color.white));
             button.setBackground(getResources().getDrawable(R.drawable.detailed_channel_selector));
+            button.setTextSize(24);
             subMenuCCTV.addView(button);
         }
 
@@ -163,11 +168,16 @@ public class MainActivity extends AppCompatActivity {
         for (String channel : localChannels) {
             Button button = new Button(this);
             button.setText(channel);
-            button.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            // 创建 LayoutParams 并设置 margin
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(4, 4, 4, 4);
+            // 设置按钮属性
+            button.setLayoutParams(layoutParams);
             button.setPadding(16, 16, 16, 16);
             button.setTextColor(getResources().getColor(android.R.color.white));
             button.setBackground(getResources().getDrawable(R.drawable.detailed_channel_selector));
+            button.setTextSize(24);
             subMenuLocal.addView(button);
         }
 
