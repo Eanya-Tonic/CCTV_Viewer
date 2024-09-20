@@ -355,26 +355,6 @@ public class MainActivity extends AppCompatActivity {
 
     // 获取 div 元素的 display 属性并执行相应的操作
     private void getDivDisplayPropertyAndDoSimulateTouch() {
-        // 获取当前获得焦点的 View
-        View focusedView = getCurrentFocus();
-
-        if (focusedView != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
-            // 输出当前获得焦点的 View 的信息
-            Log.d("Focus", "Focused View: " + focusedView.getClass().getName() + ", ID: " + focusedView.getId());
-            if (!menuOverlay.hasFocus() && isMenuOverlayVisible) {
-                menuOverlay.setVisibility(View.GONE);
-                isMenuOverlayVisible = false;
-            }
-            if ((!DrawerLayout.hasFocus() && !DrawerLayoutDetailed.hasFocus()) && isDrawerOverlayVisible) {
-                DrawerLayout.setVisibility(View.GONE);
-                DrawerLayoutDetailed.setVisibility(View.GONE);
-                isDrawerOverlayVisible = false;
-            }
-        } else {
-            Log.d("Focus", "No View has focus");
-        }
         if (webView != null) {
             if (currentLiveIndex <= 19) {
                 webView.evaluateJavascript("document.getElementById('play_or_pause_play_player').style.display", value -> {
