@@ -696,6 +696,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                 if (doubleBackToExitPressedOnce) {
                     super.onBackPressed();
+                    System.exit(0);
                     return true;
                 }
 
