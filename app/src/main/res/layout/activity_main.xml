@@ -7,10 +7,16 @@
     tools:deviceIds="tv"
     tools:context=".MainActivity">
 
-    <com.tencent.smtt.sdk.WebView
-        android:id="@+id/webView"
+    <RelativeLayout
+        android:descendantFocusability="blocksDescendants"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <com.tencent.smtt.sdk.WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/inputTextView"
