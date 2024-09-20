@@ -45,93 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
     private WebView webView; // 导入 WebView
 
-    private String[] liveUrls = {
-            "https://tv.cctv.com/live/cctv1/",
-            "https://tv.cctv.com/live/cctv2/",
-            "https://tv.cctv.com/live/cctv3/",
-            "https://tv.cctv.com/live/cctv4/",
-            "https://tv.cctv.com/live/cctv5/",
-            "https://tv.cctv.com/live/cctv6/",
-            "https://tv.cctv.com/live/cctv7/",
-            "https://tv.cctv.com/live/cctv8/",
-            "https://tv.cctv.com/live/cctvjilu",
-            "https://tv.cctv.com/live/cctv10/",
-            "https://tv.cctv.com/live/cctv11/",
-            "https://tv.cctv.com/live/cctv12/",
-            "https://tv.cctv.com/live/cctv13/",
-            "https://tv.cctv.com/live/cctvchild",
-            "https://tv.cctv.com/live/cctv15/",
-            "https://tv.cctv.com/live/cctv16/",
-            "https://tv.cctv.com/live/cctv17/",
-            "https://tv.cctv.com/live/cctv5plus/",
-            "https://tv.cctv.com/live/cctveurope",
-            "https://tv.cctv.com/live/cctvamerica/",
-            "https://www.yangshipin.cn/tv/home?pid=600002309",
-            "https://www.yangshipin.cn/tv/home?pid=600002521",
-            "https://www.yangshipin.cn/tv/home?pid=600002483",
-            "https://www.yangshipin.cn/tv/home?pid=600002520",
-            "https://www.yangshipin.cn/tv/home?pid=600002475",
-            "https://www.yangshipin.cn/tv/home?pid=600002508",
-            "https://www.yangshipin.cn/tv/home?pid=600002485",
-            "https://www.yangshipin.cn/tv/home?pid=600002509",
-            "https://www.yangshipin.cn/tv/home?pid=600002498",
-            "https://www.yangshipin.cn/tv/home?pid=600002506",
-            "https://www.yangshipin.cn/tv/home?pid=600002531",
-            "https://www.yangshipin.cn/tv/home?pid=600002481",
-            "https://www.yangshipin.cn/tv/home?pid=600002516",
-            "https://www.yangshipin.cn/tv/home?pid=600002525",
-            "https://www.yangshipin.cn/tv/home?pid=600002484",
-            "https://www.yangshipin.cn/tv/home?pid=600002490",
-            "https://www.yangshipin.cn/tv/home?pid=600002503",
-            "https://www.yangshipin.cn/tv/home?pid=600002505",
-            "https://www.yangshipin.cn/tv/home?pid=600002532",
-            "https://www.yangshipin.cn/tv/home?pid=600002493",
-            "https://www.yangshipin.cn/tv/home?pid=600002513",
-    };
+    private String[] liveUrls = {"https://tv.cctv.com/live/cctv1/", "https://tv.cctv.com/live/cctv2/", "https://tv.cctv.com/live/cctv3/", "https://tv.cctv.com/live/cctv4/", "https://tv.cctv.com/live/cctv5/", "https://tv.cctv.com/live/cctv6/", "https://tv.cctv.com/live/cctv7/", "https://tv.cctv.com/live/cctv8/", "https://tv.cctv.com/live/cctvjilu", "https://tv.cctv.com/live/cctv10/", "https://tv.cctv.com/live/cctv11/", "https://tv.cctv.com/live/cctv12/", "https://tv.cctv.com/live/cctv13/", "https://tv.cctv.com/live/cctvchild", "https://tv.cctv.com/live/cctv15/", "https://tv.cctv.com/live/cctv16/", "https://tv.cctv.com/live/cctv17/", "https://tv.cctv.com/live/cctv5plus/", "https://tv.cctv.com/live/cctveurope", "https://tv.cctv.com/live/cctvamerica/", "https://www.yangshipin.cn/tv/home?pid=600002309", "https://www.yangshipin.cn/tv/home?pid=600002521", "https://www.yangshipin.cn/tv/home?pid=600002483", "https://www.yangshipin.cn/tv/home?pid=600002520", "https://www.yangshipin.cn/tv/home?pid=600002475", "https://www.yangshipin.cn/tv/home?pid=600002508", "https://www.yangshipin.cn/tv/home?pid=600002485", "https://www.yangshipin.cn/tv/home?pid=600002509", "https://www.yangshipin.cn/tv/home?pid=600002498", "https://www.yangshipin.cn/tv/home?pid=600002506", "https://www.yangshipin.cn/tv/home?pid=600002531", "https://www.yangshipin.cn/tv/home?pid=600002481", "https://www.yangshipin.cn/tv/home?pid=600002516", "https://www.yangshipin.cn/tv/home?pid=600002525", "https://www.yangshipin.cn/tv/home?pid=600002484", "https://www.yangshipin.cn/tv/home?pid=600002490", "https://www.yangshipin.cn/tv/home?pid=600002503", "https://www.yangshipin.cn/tv/home?pid=600002505", "https://www.yangshipin.cn/tv/home?pid=600002532", "https://www.yangshipin.cn/tv/home?pid=600002493", "https://www.yangshipin.cn/tv/home?pid=600002513",};
 
-    private String[] channelNames = {
-            "1 CCTV-1 综合",
-            "2 CCTV-2 财经",
-            "3 CCTV-3 综艺",
-            "4 CCTV-4 中文国际（亚）",
-            "5 CCTV-5 体育",
-            "6 CCTV-6 电影",
-            "7 CCTV-7 国防军事",
-            "8 CCTV-8 电视剧",
-            "9 CCTV-9 纪录",
-            "10 CCTV-10 科教",
-            "11 CCTV-11 戏曲",
-            "12 CCTV-12 社会与法",
-            "13 CCTV-13 新闻",
-            "14 CCTV-14 少儿",
-            "15 CCTV-15 音乐",
-            "16 CCTV-16 奥林匹克",
-            "17 CCTV-17 农业农村",
-            "18 CCTV-5+ 体育赛事",
-            "19 CCTV-4 中文国际（欧）",
-            "20 CCTV-4 中文国际（美）",
-            "21 北京卫视",
-            "22 江苏卫视",
-            "23 东方卫视",
-            "24 浙江卫视",
-            "25 湖南卫视",
-            "26 湖北卫视",
-            "27 广东卫视",
-            "28 广西卫视",
-            "29 黑龙江卫视",
-            "30 海南卫视",
-            "31 重庆卫视",
-            "32 深圳卫视",
-            "33 四川卫视",
-            "34 河南卫视",
-            "35 福建东南卫视",
-            "36 贵州卫视",
-            "37 江西卫视",
-            "38 辽宁卫视",
-            "39 安徽卫视",
-            "40 河北卫视",
-            "41 山东卫视",
-    };
+    private String[] channelNames = {"1 CCTV-1 综合", "2 CCTV-2 财经", "3 CCTV-3 综艺", "4 CCTV-4 中文国际（亚）", "5 CCTV-5 体育", "6 CCTV-6 电影", "7 CCTV-7 国防军事", "8 CCTV-8 电视剧", "9 CCTV-9 纪录", "10 CCTV-10 科教", "11 CCTV-11 戏曲", "12 CCTV-12 社会与法", "13 CCTV-13 新闻", "14 CCTV-14 少儿", "15 CCTV-15 音乐", "16 CCTV-16 奥林匹克", "17 CCTV-17 农业农村", "18 CCTV-5+ 体育赛事", "19 CCTV-4 中文国际（欧）", "20 CCTV-4 中文国际（美）", "21 北京卫视", "22 江苏卫视", "23 东方卫视", "24 浙江卫视", "25 湖南卫视", "26 湖北卫视", "27 广东卫视", "28 广西卫视", "29 黑龙江卫视", "30 海南卫视", "31 重庆卫视", "32 深圳卫视", "33 四川卫视", "34 河南卫视", "35 福建东南卫视", "36 贵州卫视", "37 江西卫视", "38 辽宁卫视", "39 安徽卫视", "40 河北卫视", "41 山东卫视",};
 
     private int currentLiveIndex;
 
@@ -160,14 +76,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean isDrawerOverlayVisible = false;
 
     private LinearLayout menuOverlay;
-    private  LinearLayout DrawerLayout;
-    private  LinearLayout DrawerLayoutDetailed;
+    private LinearLayout DrawerLayout;
+    private LinearLayout DrawerLayoutDetailed;
     private LinearLayout SubMenuCCTV;
     private LinearLayout SubMenuLocal;
     private TextView CoreText;
 
     private int menuOverlaySelectedIndex = 0;
-    private  int DrawerLayoutSelectedIndex = 0;
+    private int DrawerLayoutSelectedIndex = 0;
     private int SubMenuCCTVSelectedIndex = 0;
     private int SubMenuLocalSelectedIndex = 0;
 
@@ -211,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         CoreText = findViewById(R.id.CoreText);
 
 
-
         // 加载上次保存的位置
         loadLastLiveIndex();
 
@@ -228,12 +143,12 @@ public class MainActivity extends AppCompatActivity {
 
         boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
         Log.d("canLoadX5", String.valueOf(canLoadX5));
-        if(canLoadX5) {
+        if (canLoadX5) {
 
             CoreText.setText("当前程序运行在腾讯X5内核上");
         }
 //        if (canLoadX5) {
-            QbSdk.installLocalTbsCore(getApplicationContext(), 45738, "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
+        QbSdk.installLocalTbsCore(getApplicationContext(), 45738, "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
 //        }
 
         HashMap<String, Object> map = new HashMap<>(2);
@@ -281,127 +196,124 @@ public class MainActivity extends AppCompatActivity {
             // 设置 WebViewClient，监听页面加载完成事件
             @Override
             public void onPageFinished(WebView view, String url) {
-                    // 页面加载完成后执行 JavaScript 脚本
+                // 页面加载完成后执行 JavaScript 脚本
 
-                    // 清空info
-                    info = "";
+                // 清空info
+                info = "";
 
-                    if(currentLiveIndex <= 19) {
-                        // 获取节目预告和当前节目
-                        view.evaluateJavascript("document.querySelector('#jiemu > li.cur.act').innerText", value -> {
-                            // 处理获取到的元素值
-                            if (!value.equals("null") && !value.isEmpty()) {
-                                String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
-                                info += elementValueNow + "\n";
-                            }
-                        });
-                        view.evaluateJavascript("document.querySelector('#jiemu > li:nth-child(4)').innerText", value -> {
-                            // 处理获取到的元素值
-                            if (!value.equals("null") && !value.isEmpty()) {
-                                String elementValueNext = value.replace("\"", ""); // 去掉可能的引号
-                                info += elementValueNext;
-                            }
-                        });
-                    } else if (currentLiveIndex <= 40) {
-                        // 获取当前节目
-                        view.evaluateJavascript("document.getElementsByClassName(\"tvSelectJiemu\")[0].innerHTML + \" \" + document.getElementsByClassName(\"tvSelectJiemu\")[1].innerHTML", value -> {
-                            if (!value.equals("null") && !value.isEmpty()) {
-                                String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
-                                info += elementValueNow;
-                            }
-                        });
-                    }
+                if (currentLiveIndex <= 19) {
+                    // 获取节目预告和当前节目
+                    view.evaluateJavascript("document.querySelector('#jiemu > li.cur.act').innerText", value -> {
+                        // 处理获取到的元素值
+                        if (!value.equals("null") && !value.isEmpty()) {
+                            String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
+                            info += elementValueNow + "\n";
+                        }
+                    });
+                    view.evaluateJavascript("document.querySelector('#jiemu > li:nth-child(4)').innerText", value -> {
+                        // 处理获取到的元素值
+                        if (!value.equals("null") && !value.isEmpty()) {
+                            String elementValueNext = value.replace("\"", ""); // 去掉可能的引号
+                            info += elementValueNext;
+                        }
+                    });
+                } else if (currentLiveIndex <= 40) {
+                    // 获取当前节目
+                    view.evaluateJavascript("document.getElementsByClassName(\"tvSelectJiemu\")[0].innerHTML + \" \" + document.getElementsByClassName(\"tvSelectJiemu\")[1].innerHTML", value -> {
+                        if (!value.equals("null") && !value.isEmpty()) {
+                            String elementValueNow = value.replace("\"", ""); // 去掉可能的引号
+                            info += elementValueNow;
+                        }
+                    });
+                }
 
-                String script1 =
-                            """
-                                    // 定义休眠函数
-                                    function sleep(ms) {
-                                        return new Promise(resolve => setTimeout(resolve, ms));
-                                    }
-                                                    
-                                    // 页面加载完成后执行 JavaScript 脚本
-                                    let interval=setInterval(async function executeScript() {
-                                        console.log('页面加载完成！');
-                                                    
-                                        // 休眠 1000 毫秒（1秒）
-                                        await sleep(1000);
-                                                    
-                                        // 休眠 50 毫秒
-                                        await sleep(50);
-                                                    
-                                        console.log('设置音量并点击音量按钮');
-                                        var btn = document.querySelector('#player_sound_btn_player');
-                                        btn.setAttribute('volume', 100);
-                                        // btn.click();
-                                        // btn.click();
-                                        // btn.click();
-                                                    
-                                        // 休眠 50 毫秒
-                                        await sleep(50);
-                                                    
-                                        console.log('点击全屏按钮');
-                                        var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player');
-                                        fullscreenBtn.click();
+                String script1 = """
+                        // 定义休眠函数
+                        function sleep(ms) {
+                            return new Promise(resolve => setTimeout(resolve, ms));
+                        }
                                         
-                                        // 休眠 50 毫秒
-                                        await sleep(50);
-                                                    
-                                        // console.log('点击分辨率按钮');
-                                        // var elem = document.querySelector('#resolution_item_720_player');
-                                        // try {
-                                        //     elem.click();
-                                        //     }
-                                        // catch (error) {
-                                        //     clearInterval(interval);
-                                        //     }
-                                        clearInterval(interval);
-                                    }, 3000);
-                                    """;
-
-                    String script2 =
-                            """
-                                    // 定义休眠函数
-                                    function sleep(ms) {
-                                        return new Promise(resolve => setTimeout(resolve, ms));
-                                    }
-                                                    
-                                    // 页面加载完成后执行 JavaScript 脚本
-                                    let interval=setInterval(async function executeScript() {
-                                        console.log('页面加载完成！');
-                                                    
-                                        // 休眠 1000 毫秒（1秒）
-                                        await sleep(3000);
+                        // 页面加载完成后执行 JavaScript 脚本
+                        let interval=setInterval(async function executeScript() {
+                            console.log('页面加载完成！');
                                         
-                                        console.log('点击全屏按钮');
-                                        var btn = document.querySelector('.videoFull');
-                                        btn.click();
+                            // 休眠 1000 毫秒（1秒）
+                            await sleep(1000);
                                         
-                                        clearInterval(interval);
-                                    }, 3000);
-                            """;
-
-                    if(currentLiveIndex <= 19){
-                        view.evaluateJavascript(script1, null);
-                    } else if (currentLiveIndex <= 40) {
-                        new Handler().postDelayed(() -> {
-                        view.evaluateJavascript(script2, null);
+                            // 休眠 50 毫秒
+                            await sleep(50);
+                                        
+                            console.log('设置音量并点击音量按钮');
+                            var btn = document.querySelector('#player_sound_btn_player');
+                            btn.setAttribute('volume', 100);
+                            // btn.click();
+                            // btn.click();
+                            // btn.click();
+                                        
+                            // 休眠 50 毫秒
+                            await sleep(50);
+                                        
+                            console.log('点击全屏按钮');
+                            var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player');
+                            fullscreenBtn.click();
+                            
+                            // 休眠 50 毫秒
+                            await sleep(50);
+                                        
+                            // console.log('点击分辨率按钮');
+                            // var elem = document.querySelector('#resolution_item_720_player');
+                            // try {
+                            //     elem.click();
+                            //     }
+                            // catch (error) {
+                            //     clearInterval(interval);
+                            //     }
+                            clearInterval(interval);
                         }, 3000);
-                    }
+                        """;
+
+                String script2 = """
+                                // 定义休眠函数
+                                function sleep(ms) {
+                                    return new Promise(resolve => setTimeout(resolve, ms));
+                                }
+                                                
+                                // 页面加载完成后执行 JavaScript 脚本
+                                let interval=setInterval(async function executeScript() {
+                                    console.log('页面加载完成！');
+                                                
+                                    // 休眠 1000 毫秒（1秒）
+                                    await sleep(3000);
+                                    
+                                    console.log('点击全屏按钮');
+                                    var btn = document.querySelector('.videoFull');
+                                    btn.click();
+                                    
+                                    clearInterval(interval);
+                                }, 3000);
+                        """;
+
+                if (currentLiveIndex <= 19) {
+                    view.evaluateJavascript(script1, null);
+                } else if (currentLiveIndex <= 40) {
+                    new Handler().postDelayed(() -> {
+                        view.evaluateJavascript(script2, null);
+                    }, 3000);
+                }
 
                 new Handler().postDelayed(() -> {
-                        // 模拟触摸
-                        if(!canLoadX5) {
-                            simulateTouch(view, 0.5f, 0.5f);
-                        }
-                        // 隐藏加载的 View
-                        loadingOverlay.setVisibility(View.GONE);
+                    // 模拟触摸
+                    if (!canLoadX5) {
+                        simulateTouch(view, 0.5f, 0.5f);
+                    }
+                    // 隐藏加载的 View
+                    loadingOverlay.setVisibility(View.GONE);
 
-                        // 显示覆盖层，传入当前频道信息
-                        showOverlay(channelNames[currentLiveIndex] + "\n" + info);
-                    }, 5000);
-                }
-            });
-
+                    // 显示覆盖层，传入当前频道信息
+                    showOverlay(channelNames[currentLiveIndex] + "\n" + info);
+                }, 5000);
+            }
+        });
 
 
         // 禁用缩放
@@ -451,11 +363,11 @@ public class MainActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
             // 输出当前获得焦点的 View 的信息
             Log.d("Focus", "Focused View: " + focusedView.getClass().getName() + ", ID: " + focusedView.getId());
-            if(!menuOverlay.hasFocus() && isMenuOverlayVisible){
+            if (!menuOverlay.hasFocus() && isMenuOverlayVisible) {
                 menuOverlay.setVisibility(View.GONE);
                 isMenuOverlayVisible = false;
             }
-            if((!DrawerLayout.hasFocus() && !DrawerLayoutDetailed.hasFocus()) && isDrawerOverlayVisible){
+            if ((!DrawerLayout.hasFocus() && !DrawerLayoutDetailed.hasFocus()) && isDrawerOverlayVisible) {
                 DrawerLayout.setVisibility(View.GONE);
                 DrawerLayoutDetailed.setVisibility(View.GONE);
                 isDrawerOverlayVisible = false;
@@ -464,25 +376,24 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Focus", "No View has focus");
         }
         if (webView != null) {
-            if(currentLiveIndex <= 19){
+            if (currentLiveIndex <= 19) {
                 webView.evaluateJavascript("document.getElementById('play_or_pause_play_player').style.display", value -> {
-                // 处理获取到的 display 属性值
-                if (value.equals("\"block\"")) {
-                    // 执行点击操作
-                    simulateTouch(webView, 0.5f, 0.5f);
-                }
-            });
+                    // 处理获取到的 display 属性值
+                    if (value.equals("\"block\"")) {
+                        // 执行点击操作
+                        simulateTouch(webView, 0.5f, 0.5f);
+                    }
+                });
             } else if (currentLiveIndex <= 40) {
-                String scriptPlay =
-                    """
-                    try{
-                    if(document.querySelector('.voice.on').style.display == 'none'){
-                        document.querySelector('.voice.on').click();
-                    }
-                    document.querySelector('.play.play1').click();
-                    } catch(e) {
-                    }
-                    """;
+                String scriptPlay = """
+                        try{
+                        if(document.querySelector('.voice.on').style.display == 'none'){
+                            document.querySelector('.voice.on').click();
+                        }
+                        document.querySelector('.play.play1').click();
+                        } catch(e) {
+                        }
+                        """;
                 webView.evaluateJavascript(scriptPlay, null);
             }
         }
@@ -497,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
                 audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
             } else if (menuOverlay.hasFocus()) {
                 // menuOverlay具有焦点
-                if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                     // 按下返回键
                     showMenuOverlay();
                     return true;
@@ -528,11 +439,10 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case 1:
                             // 播放
-                            if(currentLiveIndex <= 19){
+                            if (currentLiveIndex <= 19) {
                                 simulateTouch(webView, 0.5f, 0.5f);
                             } else if (currentLiveIndex <= 40) {
-                                String scriptPause =
-                                        """
+                                String scriptPause = """
                                         try{
                                         document.querySelector('.play.play2').click();
                                         } catch(e) {
@@ -545,14 +455,12 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case 2:
                             // 切换全屏
-                            String script1 =
-                                    """   
+                            String script1 = """   
                                     console.log('点击全屏按钮');
                                     document.querySelector('#player_pagefullscreen_yes_player').click();
                                     """;
 
-                            String script2 =
-                                    """
+                            String script2 = """
                                     console.log('点击全屏按钮');
                                     if(document.querySelector('.videoFull').id == ''){
                                         document.querySelector('.videoFull').click();
@@ -561,7 +469,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                     """;
 
-                            if(currentLiveIndex <= 19){
+                            if (currentLiveIndex <= 19) {
                                 webView.evaluateJavascript(script1, null);
                             } else if (currentLiveIndex <= 40) {
                                 new Handler().postDelayed(() -> {
@@ -571,8 +479,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case 3:
                             // 放大
-                            String scriptZoomIn =
-                                    """
+                            String scriptZoomIn = """
                                     // 获取当前页面的缩放比例
                                     function getZoom() {
                                       return parseFloat(document.body.style.zoom) || 1;
@@ -588,15 +495,14 @@ public class MainActivity extends AppCompatActivity {
                                       var zoom = getZoom();
                                       setZoom(zoom + 0.1);
                                     }
-                                    
+                                                                        
                                     zoomIn();
                                     """;
                             webView.evaluateJavascript(scriptZoomIn, null);
                             break;
                         case 4:
                             // 缩小
-                            String scriptZoomOut =
-                                    """
+                            String scriptZoomOut = """
                                     // 获取当前页面的缩放比例
                                     function getZoom() {
                                       return parseFloat(document.body.style.zoom) || 1;
@@ -614,7 +520,7 @@ public class MainActivity extends AppCompatActivity {
                                         setZoom(zoom - 0.1);
                                       }
                                     }
-                                    
+                                                                        
                                     zoomOut();
                                     """;
                             webView.evaluateJavascript(scriptZoomOut, null);
@@ -628,9 +534,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return true;
             }
-            if(DrawerLayout.hasFocus() && !SubMenuCCTV.hasFocus() && !SubMenuLocal.hasFocus() && !DrawerLayoutDetailed.hasFocus()){
+            if (DrawerLayout.hasFocus() && !SubMenuCCTV.hasFocus() && !SubMenuLocal.hasFocus() && !DrawerLayoutDetailed.hasFocus()) {
                 // DrawerLayout具有焦点
-                if(event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT){
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                     // 按下返回键
                     showChannelList();
                     return true;
@@ -675,9 +581,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     return true;
                 }
-            }else if(SubMenuCCTV.hasFocus())
-            {
-                if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+            } else if (SubMenuCCTV.hasFocus()) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                     // 按下返回键
                     DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
                     SubMenuCCTV.setVisibility(View.GONE);
@@ -715,9 +620,8 @@ public class MainActivity extends AppCompatActivity {
                     showChannelList();
                     return true;
                 }
-            } else if (SubMenuLocal.hasFocus())
-            {
-                if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+            } else if (SubMenuLocal.hasFocus()) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                     // 按下返回键
                     DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
                     SubMenuLocal.setVisibility(View.GONE);
@@ -757,8 +661,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else if (DrawerLayoutDetailed.hasFocus()) {
                 return true;
-            }
-            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
                 // 执行上一个直播地址的操作
                 navigateToPreviousLive();
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
@@ -772,49 +675,47 @@ public class MainActivity extends AppCompatActivity {
                 // 显示节目列表
                 showOverlay(channelNames[currentLiveIndex] + "\n" + info);
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
-            }else if (event.getKeyCode() == KeyEvent.KEYCODE_MENU || event.getKeyCode() == KeyEvent.KEYCODE_M) {
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_MENU || event.getKeyCode() == KeyEvent.KEYCODE_M) {
                 // 显示菜单
                 showMenuOverlay();
 
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
+            } else if (event.getKeyCode() >= KeyEvent.KEYCODE_0 && event.getKeyCode() <= KeyEvent.KEYCODE_9) {
+                int numericKey = event.getKeyCode() - KeyEvent.KEYCODE_0;
+
+                // 将按下的数字键追加到缓冲区
+                digitBuffer.append(numericKey);
+
+                // 使用 Handler 来在超时后处理输入的数字
+                new Handler().postDelayed(() -> handleNumericInput(), DIGIT_TIMEOUT);
+
+                // 更新显示正在输入的数字的 TextView
+                updateInputTextView();
+
+                return true;  // 事件已处理，不传递给 WebView
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                if (doubleBackToExitPressedOnce) {
+                    super.onBackPressed();
+                    return true;
+                }
+
+                this.doubleBackToExitPressedOnce = true;
+                Toast.makeText(this, "再按一次返回键退出应用", Toast.LENGTH_SHORT).show();
+
+                new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
+                // 如果两秒内再次按返回键，则退出应用
             }
-            return true;  // 返回 true 表示事件已处理，不传递给 WebView
-        }else if (event.getKeyCode() >= KeyEvent.KEYCODE_0 && event.getKeyCode() <= KeyEvent.KEYCODE_9) {
-            int numericKey = event.getKeyCode() - KeyEvent.KEYCODE_0;
-
-            // 将按下的数字键追加到缓冲区
-            digitBuffer.append(numericKey);
-
-            // 使用 Handler 来在超时后处理输入的数字
-            new Handler().postDelayed(() -> handleNumericInput(), DIGIT_TIMEOUT);
-
-            // 更新显示正在输入的数字的 TextView
-            updateInputTextView();
-
-            return true;  // 事件已处理，不传递给 WebView
-        }else if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
-            if (doubleBackToExitPressedOnce) {
-                super.onBackPressed();
-                return true;
-            }
-
-            this.doubleBackToExitPressedOnce = true;
-            Toast.makeText(this, "再按一次返回键退出应用", Toast.LENGTH_SHORT).show();
-
-            new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
-            // 如果两秒内再次按返回键，则退出应用
         }
-
-        return super.dispatchKeyEvent(event);  // 如果不处理，调用父类的方法继续传递事件
+        return true; //不处理其余事件
     }
 
     // 显示底部菜单
     private void showMenuOverlay() {
-        if(!isMenuOverlayVisible) {
+        if (!isMenuOverlayVisible) {
             findViewById(R.id.menuOverlay).requestFocus();
             findViewById(R.id.menuOverlay).setVisibility(View.VISIBLE);
             isMenuOverlayVisible = true;
-        }else {
+        } else {
 //            findViewById(R.id.main_browse_fragment).requestFocus();
             findViewById(R.id.menuOverlay).setVisibility(View.GONE);
             isMenuOverlayVisible = false;
@@ -824,22 +725,22 @@ public class MainActivity extends AppCompatActivity {
     // 频道选择列表
     private void showChannelList() {
         // 显示频道抽屉
-        if(!isDrawerOverlayVisible) {
+        if (!isDrawerOverlayVisible) {
             DrawerLayoutDetailed.setVisibility(View.VISIBLE);
             DrawerLayout.setVisibility(View.VISIBLE);
             isDrawerOverlayVisible = true;
-            if(currentLiveIndex < 20) {
+            if (currentLiveIndex < 20) {
                 SubMenuCCTV.setVisibility(View.VISIBLE);
                 findViewById(R.id.CCTVScroll).setVisibility(View.VISIBLE);
                 SubMenuCCTV.getChildAt(currentLiveIndex).requestFocus();
                 SubMenuCCTVSelectedIndex = currentLiveIndex;
-            }else {
+            } else {
                 SubMenuLocal.setVisibility(View.VISIBLE);
                 findViewById(R.id.LocalScroll).setVisibility(View.VISIBLE);
                 SubMenuLocal.getChildAt(currentLiveIndex - 20).requestFocus();
                 SubMenuLocalSelectedIndex = currentLiveIndex - 20;
             }
-        }else {
+        } else {
             DrawerLayout.setVisibility(View.GONE);
             SubMenuCCTV.setVisibility(View.GONE);
             SubMenuLocal.setVisibility(View.GONE);
@@ -897,11 +798,11 @@ public class MainActivity extends AppCompatActivity {
 
             webView.setInitialScale(getMinimumScale());
             webView.loadUrl(liveUrls[currentLiveIndex]);
-            if(currentLiveIndex > 19){
+            if (currentLiveIndex > 19) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(webView != null) {
+                        if (webView != null) {
                             webView.setInitialScale(getMinimumScale());
                             webView.reload();
                         }
