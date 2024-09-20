@@ -200,6 +200,30 @@
                 android:textColor="#FFFFFF" />
         </LinearLayout>
 
+        <!-- X5 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/btnX5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_selector"
+                android:focusable="true"
+                android:padding="8dp"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="X5内核"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
         <!-- 退出 -->
         <LinearLayout
             android:layout_width="10dp"

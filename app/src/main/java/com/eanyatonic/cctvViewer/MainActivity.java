@@ -282,6 +282,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                     // 页面加载完成后执行 JavaScript 脚本
+                    Log.e("当前url",url);
+
+                    //模拟点击 自动下载x5内核
+                    if(url.startsWith("http://res.imtt.qq.com")){
+                        view.postDelayed(()->{
+                            // 获取 WebView 的宽度和高度
+                            final int webViewWidth = webView.getWidth();
+                            final int webViewHeight = webView.getHeight();
+
+                            // 计算触摸点的位置为右上角
+                            final float x = webViewWidth - 50; // 50 是偏移量，根据具体需求调整
+                            final float y = 50; // 50 是偏移量，根据具体需求调整
+
+
+                            simulateTouch(view, x, y);
+                        },2000);
+
+                        return;
+                    }
+
 
                     // 清空info
                     info = "";
@@ -505,12 +525,12 @@ public class MainActivity extends AppCompatActivity {
                     // 方向键,切换五个按钮选择
                     if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                         if (menuOverlaySelectedIndex == 0) {
-                            menuOverlaySelectedIndex = 5;
+                            menuOverlaySelectedIndex = 6;
                         } else {
                             menuOverlaySelectedIndex--;
                         }
                     } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                        if (menuOverlaySelectedIndex == 5) {
+                        if (menuOverlaySelectedIndex == 6) {
                             menuOverlaySelectedIndex = 0;
                         } else {
                             menuOverlaySelectedIndex++;
@@ -620,6 +640,10 @@ public class MainActivity extends AppCompatActivity {
                             webView.evaluateJavascript(scriptZoomOut, null);
                             break;
                         case 5:
+                            // x5内核调试
+                            webView.loadUrl("https://debugtbs.qq.com/?10000/");
+                            break;
+                        case 6:
                             // 退出
                             System.exit(0);
                             break;
