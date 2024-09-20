@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -126,6 +127,49 @@ public class MainActivity extends AppCompatActivity {
         // 初始化 CoreText
         CoreText = findViewById(R.id.CoreText);
 
+        LinearLayout subMenuCCTV = findViewById(R.id.subMenuCCTV);
+        LinearLayout subMenuLocal = findViewById(R.id.subMenuLocal);
+
+        // 中央台频道列表
+        String[] cctvChannels = {
+                "CCTV-1 综合", "CCTV-2 财经", "CCTV-3 综艺", "CCTV-4 中文国际（亚）",
+                "CCTV-5 体育", "CCTV-6 电影", "CCTV-7 国防军事", "CCTV-8 电视剧",
+                "CCTV-9 纪录", "CCTV-10 科教", "CCTV-11 戏曲", "CCTV-12 社会与法",
+                "CCTV-13 新闻", "CCTV-14 少儿", "CCTV-15 音乐", "CCTV-16 奥林匹克",
+                "CCTV-17 农业农村", "CCTV-5+ 体育赛事", "CCTV-4 中文国际（欧）", "CCTV-4 中文国际（美）"
+        };
+
+        // 动态生成中央台按钮
+        for (String channel : cctvChannels) {
+            Button button = new Button(this);
+            button.setText(channel);
+            button.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            button.setPadding(16, 16, 16, 16);
+            button.setTextColor(getResources().getColor(android.R.color.white));
+            button.setBackground(getResources().getDrawable(R.drawable.detailed_channel_selector));
+            subMenuCCTV.addView(button);
+        }
+
+        // 地方台频道列表
+        String[] localChannels = {
+                "北京卫视", "江苏卫视", "东方卫视", "浙江卫视", "湖南卫视", "湖北卫视",
+                "广东卫视", "广西卫视", "黑龙江卫视", "海南卫视", "重庆卫视", "深圳卫视",
+                "四川卫视", "河南卫视", "福建东南卫视", "贵州卫视", "江西卫视", "辽宁卫视",
+                "安徽卫视", "河北卫视", "山西卫视"
+        };
+
+        // 动态生成地方台按钮
+        for (String channel : localChannels) {
+            Button button = new Button(this);
+            button.setText(channel);
+            button.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            button.setPadding(16, 16, 16, 16);
+            button.setTextColor(getResources().getColor(android.R.color.white));
+            button.setBackground(getResources().getDrawable(R.drawable.detailed_channel_selector));
+            subMenuLocal.addView(button);
+        }
 
         // 加载上次保存的位置
         loadLastLiveIndex();
