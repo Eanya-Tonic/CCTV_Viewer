@@ -252,14 +252,50 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                // 页面加载时执行 JavaScript 脚本
+                view.evaluateJavascript(
+                    """
+                        function FastLoading() {
+                                     const fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player') || document.querySelector('.videoFull');
+                                     if (fullscreenBtn) return;
+                                 
+                                     // 清空所有图片的 src 属性，阻止图片加载
+                                     Array.from(document.getElementsByTagName('img')).forEach(img => {
+                                         img.src = '';
+                                     });
+                                 
+                                     // 清空特定的脚本 src 属性
+                                     const scriptKeywords = ['login', 'index', 'daohang', 'grey', 'jquery'];
+                                     Array.from(document.getElementsByTagName('script')).forEach(script => {
+                                         if (scriptKeywords.some(keyword => script.src.includes(keyword))) {
+                                             script.src = '';
+                                         }
+                                     });
+                                 
+                                     // 清空具有特定 class 的 div 内容
+                                     const classNames = ['newmap', 'newtopbz', 'newtopbzTV', 'column_wrapper'];
+                                     classNames.forEach(className => {
+                                         Array.from(document.getElementsByClassName(className)).forEach(div => {
+                                             div.innerHTML = '';
+                                         });
+                                     });
+                                 
+                                     // 递归调用 FastLoading，每 4ms 触发一次
+                                     setTimeout(FastLoading, 4);
+                                 }
+                                 
+                                 FastLoading();
+                                             
+                        """
+                        ,
+                        value -> {
+                        });
                 super.onPageStarted(view, url, favicon);
             }
 
             // 设置 WebViewClient，监听页面加载完成事件
             @Override
             public void onPageFinished(WebView view, String url) {
-                // 页面加载完成后执行 JavaScript 脚本
-
                 // 清空info
                 info = "";
 
@@ -291,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                 view.evaluateJavascript(
                         """
                                      
-                                     function af(){ 
+                                     function AutoFullscreen(){ 
                                          var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player')||document.querySelector('.videoFull');
                                          if(fullscreenBtn!=null){
                                             //alert(fullscreenBtn)
@@ -299,11 +335,11 @@ public class MainActivity extends AppCompatActivity {
                                           document.querySelector('video').volume=1;
                                          }else{
                                              setTimeout(
-                                                ()=>{ af();}
+                                                ()=>{ AutoFullscreen();}
                                             ,16); 
                                          }
                                      }
-                                af()
+                                AutoFullscreen()
                                 """
                         ,
                         value -> {
@@ -318,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // 显示覆盖层，传入当前频道信息
                     showOverlay(channelNames[currentLiveIndex] + "\n" + info);
-                }, 1000);
+                }, 500);
             }
         });
 
@@ -332,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
         webView.setFocusable(false);
 
         // 开启无图（X5内核）
-        if(canLoadX5) {
+        if (canLoadX5) {
             webView.getSettingsExtension().setPicModel(IX5WebSettingsExtension.PicModel_NoPic);
         }
         // 设置 WebView 客户端
