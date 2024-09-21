@@ -5,4 +5,5 @@
     <color name="search_opaque">#ffaa3f</color>
     <color name="selected_background">#ffaa3f</color>
     <color name="default_background">#3d3d3d</color>
+    <color name="loading_background">#232323</color>
 </resources>

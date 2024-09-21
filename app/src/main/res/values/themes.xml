@@ -1,4 +1,6 @@
 <resources>
 
-    <style name="Theme.央视浏览器" parent="@style/Theme.AppCompat.Light.NoActionBar" />
+    <style name="Theme.央视浏览器" parent="@style/Theme.AppCompat.Light.NoActionBar" >
+        <item name="android:windowBackground">@color/loading_background</item>
+    </style>
 </resources>
