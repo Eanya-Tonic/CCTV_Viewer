@@ -13,11 +13,12 @@ android {
         versionCode 18
         versionName "1.6.2"
         ndk{abiFilters "armeabi", "armeabi-v7a", "x86", "mips"}
+        multiDexEnabled true
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -38,4 +39,5 @@ dependencies {
     implementation files('libs/tbs_sdk_thirdapp_v4.3.0.253_44153_sharewithdownloadwithfile_withoutGame_obfs_20220117_105333.jar')
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.multidex:multidex:2.0.1'
 }
