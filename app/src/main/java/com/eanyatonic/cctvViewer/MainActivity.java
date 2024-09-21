@@ -5,6 +5,7 @@ import static com.eanyatonic.cctvViewer.FileUtils.copyAssets;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 // X5内核代码
 import com.tencent.smtt.export.external.TbsCoreSettings;
+import com.tencent.smtt.export.external.extension.interfaces.IX5WebSettingsExtension;
 import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
@@ -218,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setDatabaseEnabled(true);
         webSettings.setLoadsImagesAutomatically(false); // 禁用自动加载图片
         webSettings.setBlockNetworkImage(true); // 禁用网络图片加载
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
         webSettings.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
 
         // 启用缓存
@@ -246,6 +249,11 @@ public class MainActivity extends AppCompatActivity {
             //public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
             //    handler.proceed(); // 忽略 SSL 错误
             //}
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+            }
 
             // 设置 WebViewClient，监听页面加载完成事件
             @Override
@@ -280,92 +288,37 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-
-                String script1 = """
-                        // 定义休眠函数
-                        function sleep(ms) {
-                            return new Promise(resolve => setTimeout(resolve, ms));
-                        }
-                                        
-                        // 页面加载完成后执行 JavaScript 脚本
-                        let interval=setInterval(async function executeScript() {
-                            console.log('页面加载完成！');
-                                        
-                            // 休眠 1000 毫秒（1秒）
-                            await sleep(1000);
-                                        
-                            // 休眠 50 毫秒
-                            await sleep(50);
-                                        
-                            console.log('设置音量并点击音量按钮');
-                            var btn = document.querySelector('#player_sound_btn_player');
-                            btn.setAttribute('volume', 100);
-                            // btn.click();
-                            // btn.click();
-                            // btn.click();
-                                        
-                            // 休眠 50 毫秒
-                            await sleep(50);
-                                        
-                            console.log('点击全屏按钮');
-                            var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player');
-                            fullscreenBtn.click();
-                            
-                            // 休眠 50 毫秒
-                            await sleep(50);
-                                        
-                            // console.log('点击分辨率按钮');
-                            // var elem = document.querySelector('#resolution_item_720_player');
-                            // try {
-                            //     elem.click();
-                            //     }
-                            // catch (error) {
-                            //     clearInterval(interval);
-                            //     }
-                            clearInterval(interval);
-                        }, 3000);
-                        """;
-
-                String script2 = """
-                                // 定义休眠函数
-                                function sleep(ms) {
-                                    return new Promise(resolve => setTimeout(resolve, ms));
-                                }
-                                                
-                                // 页面加载完成后执行 JavaScript 脚本
-                                let interval=setInterval(async function executeScript() {
-                                    console.log('页面加载完成！');
-                                                
-                                    // 休眠 1000 毫秒（1秒）
-                                    await sleep(3000);
-                                    
-                                    console.log('点击全屏按钮');
-                                    var btn = document.querySelector('.videoFull');
-                                    btn.click();
-                                    
-                                    clearInterval(interval);
-                                }, 3000);
-                        """;
-
-                if (currentLiveIndex <= 19) {
-                    view.evaluateJavascript(script1, null);
-                } else if (currentLiveIndex <= 40) {
-                    new Handler().postDelayed(() -> {
-                        view.evaluateJavascript(script2, null);
-                    }, 3000);
-                }
-
+                view.evaluateJavascript(
+                        """
+                                     
+                                     function af(){ 
+                                         var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player')||document.querySelector('.videoFull');
+                                         if(fullscreenBtn!=null){
+                                            //alert(fullscreenBtn)
+                                          fullscreenBtn.click();
+                                          document.querySelector('video').volume=1;
+                                         }else{
+                                             setTimeout(
+                                                ()=>{ af();}
+                                            ,16); 
+                                         }
+                                     }
+                                af()
+                                """
+                        ,
+                        value -> {
+                        });
                 new Handler().postDelayed(() -> {
-                    // 模拟触摸
-                    if (!canLoadX5) {
-                        simulateTouch(view, 0.5f, 0.5f);
-                    }
+//                    // 模拟触摸
+//                    if (!canLoadX5) {
+//                        simulateTouch(view, 0.5f, 0.5f);
+//                    }
                     // 隐藏加载的 View
                     loadingOverlay.setVisibility(View.GONE);
 
                     // 显示覆盖层，传入当前频道信息
                     showOverlay(channelNames[currentLiveIndex] + "\n" + info);
-                }, 5000);
+                }, 1000);
             }
         });
 
@@ -378,6 +331,10 @@ public class MainActivity extends AppCompatActivity {
         // 在 Android TV 上，需要禁用焦点自动导航
         webView.setFocusable(false);
 
+        // 开启无图（X5内核）
+        if(canLoadX5) {
+            webView.getSettingsExtension().setPicModel(IX5WebSettingsExtension.PicModel_NoPic);
+        }
         // 设置 WebView 客户端
         webView.setWebChromeClient(new WebChromeClient());
 
@@ -385,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
         loadLiveUrl();
 
         // 启动定时任务，每隔一定时间执行一次
-        startPeriodicTask();
+        // startPeriodicTask();
 
     }
 
