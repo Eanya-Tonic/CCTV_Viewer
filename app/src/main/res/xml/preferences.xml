@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:key="text_size"
+        android:title="换台抽屉字体"
+        android:summary="设置换台抽屉字体大小"
+        android:entries="@array/text_size"
+        android:entryValues="@array/text_size_values"
+        android:defaultValue="1" />
+
+    <SwitchPreference
+        android:key="dual_webview"
+        android:title="启用双缓冲加载"
+        android:summary="使用双标签页加载，在较高端设备上提供更好的换台体验"
+        android:defaultValue="true" />
+
+</PreferenceScreen>

@@ -215,7 +215,7 @@
                 android:textColor="#FFFFFF" />
         </LinearLayout>
 
-        <!-- 退出 -->
+        <!-- 设置 -->
         <LinearLayout
             android:layout_width="10dp"
             android:layout_height="wrap_content"
@@ -230,12 +230,12 @@
                 android:background="@drawable/button_selector"
                 android:focusable="true"
                 android:padding="8dp"
-                android:src="@drawable/logout" />
+                android:src="@drawable/settings" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="退出程序"
+                android:text="打开设置"
                 android:textColor="#FFFFFF" />
         </LinearLayout>
 
@@ -249,7 +249,7 @@
         <!-- 一级菜单：大类 -->
         <LinearLayout
             android:id="@+id/DrawerLayout"
-            android:layout_width="190dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:background="#88000000"
@@ -259,39 +259,12 @@
             android:padding="4dp"
             android:visibility="gone">
 
-            <!-- 央视频道按钮 -->
-            <Button
-                android:id="@+id/categoryCCTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:background="@drawable/channel_selector"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:padding="16dp"
-                android:text="央视频道"
-                android:textColor="@android:color/white"
-                android:textSize="32sp"/>
-
-            <!-- 地方频道按钮 -->
-            <Button
-                android:id="@+id/categoryLocal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:background="@drawable/channel_selector"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:padding="16dp"
-                android:text="地方频道"
-                android:textColor="@android:color/white"
-                android:textSize="32sp"/>
         </LinearLayout>
 
         <!-- 二级菜单：详细频道 -->
         <LinearLayout
             android:id="@+id/DrawerLayoutDetailed"
-            android:layout_width="240dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:background="#88000000"

@@ -3,4 +3,9 @@
     <style name="Theme.央视浏览器" parent="@style/Theme.AppCompat.Light.NoActionBar" >
         <item name="android:windowBackground">@color/loading_background</item>
     </style>
+
+    <!-- 自定义设置主题 -->
+    <style name="SettingsTheme" parent="@style/Theme.AppCompat.Light.NoActionBar" >
+        <item name="android:windowBackground">@color/settings_background</item>
+    </style>
 </resources>
