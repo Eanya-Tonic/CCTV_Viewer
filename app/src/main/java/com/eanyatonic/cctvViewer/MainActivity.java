@@ -132,12 +132,7 @@ public class MainActivity extends AppCompatActivity {
         enableDualWebView = sharedPreferences.getBoolean("dual_webview", true);
 
         // 读取WebView设置
-        Boolean forceSysWebView = sharedPreferences.getBoolean("sys_webview", false);
-        if (forceSysWebView) {
-            QbSdk.forceSysWebView();
-        } else {
-            QbSdk.unForceSysWebView();
-        }
+        Boolean forceSysWebView = sharedPreferences.getBoolean("sys_webview", true);
 
 
         // 获取 AudioManager 实例
@@ -271,15 +266,13 @@ public class MainActivity extends AppCompatActivity {
 
                 CoreText.setText("当前程序运行在腾讯X5内核上");
             }
-//        if (canLoadX5) {
             QbSdk.installLocalTbsCore(getApplicationContext(), 45738, "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
-//        }
+        }
 
             HashMap<String, Object> map = new HashMap<>(2);
             map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER, true);
             map.put(TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE, true);
             QbSdk.initTbsSettings(map);
-        }
 
         // 配置 WebView 设置
         WebSettings webSettings = webView0.getSettings();

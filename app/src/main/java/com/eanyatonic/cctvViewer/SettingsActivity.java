@@ -5,6 +5,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+import androidx.preference.SwitchPreference;
 
 import java.util.Objects;
 
@@ -19,10 +21,23 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+        private SwitchPreference sysWebViewPreference;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.preferences, rootKey);
+            // 获取 SwitchPreference
+            sysWebViewPreference = findPreference("sys_webview");
+
+            if (sysWebViewPreference != null) {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                boolean switchValue = sharedPreferences.getBoolean("sys_webview", true);
+
+                // 如果开关被关闭，禁用它
+                if (!switchValue) {
+                    sysWebViewPreference.setEnabled(false);
+                }
+            }
         }
 
         @Override
