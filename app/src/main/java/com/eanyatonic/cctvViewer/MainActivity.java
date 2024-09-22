@@ -1015,6 +1015,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void showChannelListDPAD(int selectIndex) {
+        // 显示频道抽屉
+        if (!isDrawerOverlayVisible) {
+            DrawerLayoutDetailed.setVisibility(View.VISIBLE);
+            DrawerLayout.setVisibility(View.VISIBLE);
+            isDrawerOverlayVisible = true;
+            if (selectIndex < 20) {
+                SubMenuCCTV.setVisibility(View.VISIBLE);
+                findViewById(R.id.CCTVScroll).setVisibility(View.VISIBLE);
+                SubMenuCCTV.getChildAt(selectIndex).requestFocus();
+                SubMenuCCTVSelectedIndex = selectIndex;
+            } else {
+                SubMenuLocal.setVisibility(View.VISIBLE);
+                findViewById(R.id.LocalScroll).setVisibility(View.VISIBLE);
+                SubMenuLocal.getChildAt(selectIndex - 20).requestFocus();
+                SubMenuLocalSelectedIndex = selectIndex - 20;
+            }
+        } else {
+            DrawerLayout.setVisibility(View.GONE);
+            SubMenuCCTV.setVisibility(View.GONE);
+            SubMenuLocal.setVisibility(View.GONE);
+            findViewById(R.id.LocalScroll).setVisibility(View.GONE);
+            findViewById(R.id.CCTVScroll).setVisibility(View.GONE);
+            DrawerLayoutDetailed.setVisibility(View.GONE);
+            isDrawerOverlayVisible = false;
+        }
+    }
+
     private void handleNumericInput() {
         // 将缓冲区中的数字转换为整数
         if (digitBuffer.length() > 0) {
@@ -1095,15 +1123,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void navigateToPreviousLive() {
-        currentLiveIndex = (currentLiveIndex - 1 + liveUrls.length) % liveUrls.length;
-        loadLiveUrl();
-        saveCurrentLiveIndex(); // 保存当前位置
+        showChannelListDPAD((currentLiveIndex - 1 + liveUrls.length) % liveUrls.length);
     }
 
     private void navigateToNextLive() {
-        currentLiveIndex = (currentLiveIndex + 1) % liveUrls.length;
-        loadLiveUrl();
-        saveCurrentLiveIndex(); // 保存当前位置
+        showChannelListDPAD((currentLiveIndex + 1 + liveUrls.length) % liveUrls.length);
     }
 
     private int getMinimumScale() {
