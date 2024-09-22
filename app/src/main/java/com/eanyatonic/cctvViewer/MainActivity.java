@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private WebView webView0; // 导入 WebView
     private WebView webView1; // 导入备用 WebView
+    private boolean canLoadX5 = false;
 
     private int currentWebView = 0; //正在使用的webView
     private boolean isChanging = false; //是否正在换台
@@ -264,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
         if (!forceSysWebView) {
             copyAssets(this, "045738_x5.tbs.apk", "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
 
-            boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
+            canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
             Log.d("canLoadX5", String.valueOf(canLoadX5));
             if (canLoadX5) {
 
@@ -596,11 +597,9 @@ public class MainActivity extends AppCompatActivity {
         webView1.setFocusable(false);
 
         // 开启无图（X5内核）
-        if (!forceSysWebView) {
-            if (canLoadX5) {
-                webView0.getSettingsExtension().setPicModel(IX5WebSettingsExtension.PicModel_NoPic);
-                webView1.getSettingsExtension().setPicModel(IX5WebSettingsExtension.PicModel_NoPic);
-            }
+        if (canLoadX5) {
+            webView0.getSettingsExtension().setPicModel(IX5WebSettingsExtension.PicModel_NoPic);
+            webView1.getSettingsExtension().setPicModel(IX5WebSettingsExtension.PicModel_NoPic);
         }
         // 设置 WebView 客户端
         webView0.setWebChromeClient(new WebChromeClient());
