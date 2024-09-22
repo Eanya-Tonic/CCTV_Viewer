@@ -262,23 +262,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // X5内核代码
-        copyAssets(this, "045738_x5.tbs.apk", "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
+        if(!forceSysWebView) {
+            copyAssets(this, "045738_x5.tbs.apk", "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
 
-        boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
-        Log.d("canLoadX5", String.valueOf(canLoadX5));
-        if (canLoadX5) {
+            boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
+            Log.d("canLoadX5", String.valueOf(canLoadX5));
+            if (canLoadX5) {
 
-            CoreText.setText("当前程序运行在腾讯X5内核上");
-        }
+                CoreText.setText("当前程序运行在腾讯X5内核上");
+            }
 //        if (canLoadX5) {
-        QbSdk.installLocalTbsCore(getApplicationContext(), 45738, "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
+            QbSdk.installLocalTbsCore(getApplicationContext(), 45738, "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
 //        }
 
-        HashMap<String, Object> map = new HashMap<>(2);
-        map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER, true);
-        map.put(TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE, true);
-        QbSdk.initTbsSettings(map);
-
+            HashMap<String, Object> map = new HashMap<>(2);
+            map.put(TbsCoreSettings.TBS_SETTINGS_USE_SPEEDY_CLASSLOADER, true);
+            map.put(TbsCoreSettings.TBS_SETTINGS_USE_DEXLOADER_SERVICE, true);
+            QbSdk.initTbsSettings(map);
+        }
 
         // 配置 WebView 设置
         WebSettings webSettings = webView0.getSettings();
