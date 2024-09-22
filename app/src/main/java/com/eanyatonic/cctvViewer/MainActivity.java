@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private int SubMenuLocalSelectedIndex = 0;
 
     private int TEXT_SIZE = 22;
+    private Boolean enableDualWebView = true;
 
 
     @Override
@@ -104,12 +105,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // 加载设置
         // 获取 SharedPreferences
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // 读取
-        String selectedOption = sharedPreferences.getString("text_size", "适中");
-        switch (selectedOption){
+        // 读取字体大小
+        String selectedOption = sharedPreferences.getString("text_size", "1");
+        switch (selectedOption) {
             case "0":
                 TEXT_SIZE = 18;
                 break;
@@ -124,6 +126,19 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
         }
+
+        // 读取双缓冲设置
+        enableDualWebView = sharedPreferences.getBoolean("dual_webview", true);
+
+        // 读取WebView设置
+        Boolean forceSysWebView = sharedPreferences.getBoolean("sys_webview",false);
+        if(forceSysWebView){
+            QbSdk.forceSysWebView();
+        }
+        else{
+            QbSdk.unForceSysWebView();
+        }
+
 
         // 获取 AudioManager 实例
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -323,39 +338,39 @@ public class MainActivity extends AppCompatActivity {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 // 页面加载时执行 JavaScript 脚本
                 view.evaluateJavascript(
-                    """
-                        function FastLoading() {
-                                     const fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player') || document.querySelector('.videoFull');
-                                     if (fullscreenBtn) return;
-                                 
-                                     // 清空所有图片的 src 属性，阻止图片加载
-                                     Array.from(document.getElementsByTagName('img')).forEach(img => {
-                                         img.src = '';
-                                     });
-                                 
-                                     // 清空特定的脚本 src 属性
-                                     const scriptKeywords = ['login', 'index', 'daohang', 'grey', 'jquery'];
-                                     Array.from(document.getElementsByTagName('script')).forEach(script => {
-                                         if (scriptKeywords.some(keyword => script.src.includes(keyword))) {
-                                             script.src = '';
-                                         }
-                                     });
-                                 
-                                     // 清空具有特定 class 的 div 内容
-                                     const classNames = ['newmap', 'newtopbz', 'newtopbzTV', 'column_wrapper'];
-                                     classNames.forEach(className => {
-                                         Array.from(document.getElementsByClassName(className)).forEach(div => {
-                                             div.innerHTML = '';
-                                         });
-                                     });
-                                 
-                                     // 递归调用 FastLoading，每 4ms 触发一次
-                                     setTimeout(FastLoading, 4);
-                                 }
-                                 
-                                 FastLoading();
-                                             
                         """
+                                function FastLoading() {
+                                             const fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player') || document.querySelector('.videoFull');
+                                             if (fullscreenBtn) return;
+                                         
+                                             // 清空所有图片的 src 属性，阻止图片加载
+                                             Array.from(document.getElementsByTagName('img')).forEach(img => {
+                                                 img.src = '';
+                                             });
+                                         
+                                             // 清空特定的脚本 src 属性
+                                             const scriptKeywords = ['login', 'index', 'daohang', 'grey', 'jquery'];
+                                             Array.from(document.getElementsByTagName('script')).forEach(script => {
+                                                 if (scriptKeywords.some(keyword => script.src.includes(keyword))) {
+                                                     script.src = '';
+                                                 }
+                                             });
+                                         
+                                             // 清空具有特定 class 的 div 内容
+                                             const classNames = ['newmap', 'newtopbz', 'newtopbzTV', 'column_wrapper'];
+                                             classNames.forEach(className => {
+                                                 Array.from(document.getElementsByClassName(className)).forEach(div => {
+                                                     div.innerHTML = '';
+                                                 });
+                                             });
+                                         
+                                             // 递归调用 FastLoading，每 4ms 触发一次
+                                             setTimeout(FastLoading, 4);
+                                         }
+                                         
+                                         FastLoading();
+                                                     
+                                """
                         ,
                         value -> {
                         });
@@ -365,8 +380,7 @@ public class MainActivity extends AppCompatActivity {
             // 设置 WebViewClient，监听页面加载完成事件
             @Override
             public void onPageFinished(WebView view, String url) {
-                if(Objects.equals(url, "about:blank"))
-                {
+                if (Objects.equals(url, "about:blank")) {
                     return;
                 }
                 // 清空info
@@ -454,38 +468,38 @@ public class MainActivity extends AppCompatActivity {
                 // 页面加载时执行 JavaScript 脚本
                 view.evaluateJavascript(
                         """
-                            function FastLoading() {
-                                         const fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player') || document.querySelector('.videoFull');
-                                         if (fullscreenBtn) return;
-                                     
-                                         // 清空所有图片的 src 属性，阻止图片加载
-                                         Array.from(document.getElementsByTagName('img')).forEach(img => {
-                                             img.src = '';
-                                         });
-                                     
-                                         // 清空特定的脚本 src 属性
-                                         const scriptKeywords = ['login', 'index', 'daohang', 'grey', 'jquery'];
-                                         Array.from(document.getElementsByTagName('script')).forEach(script => {
-                                             if (scriptKeywords.some(keyword => script.src.includes(keyword))) {
-                                                 script.src = '';
-                                             }
-                                         });
-                                     
-                                         // 清空具有特定 class 的 div 内容
-                                         const classNames = ['newmap', 'newtopbz', 'newtopbzTV', 'column_wrapper'];
-                                         classNames.forEach(className => {
-                                             Array.from(document.getElementsByClassName(className)).forEach(div => {
-                                                 div.innerHTML = '';
+                                function FastLoading() {
+                                             const fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player') || document.querySelector('.videoFull');
+                                             if (fullscreenBtn) return;
+                                         
+                                             // 清空所有图片的 src 属性，阻止图片加载
+                                             Array.from(document.getElementsByTagName('img')).forEach(img => {
+                                                 img.src = '';
                                              });
-                                         });
-                                     
-                                         // 递归调用 FastLoading，每 4ms 触发一次
-                                         setTimeout(FastLoading, 4);
-                                     }
-                                     
-                                     FastLoading();
-                                                 
-                            """
+                                         
+                                             // 清空特定的脚本 src 属性
+                                             const scriptKeywords = ['login', 'index', 'daohang', 'grey', 'jquery'];
+                                             Array.from(document.getElementsByTagName('script')).forEach(script => {
+                                                 if (scriptKeywords.some(keyword => script.src.includes(keyword))) {
+                                                     script.src = '';
+                                                 }
+                                             });
+                                         
+                                             // 清空具有特定 class 的 div 内容
+                                             const classNames = ['newmap', 'newtopbz', 'newtopbzTV', 'column_wrapper'];
+                                             classNames.forEach(className => {
+                                                 Array.from(document.getElementsByClassName(className)).forEach(div => {
+                                                     div.innerHTML = '';
+                                                 });
+                                             });
+                                         
+                                             // 递归调用 FastLoading，每 4ms 触发一次
+                                             setTimeout(FastLoading, 4);
+                                         }
+                                         
+                                         FastLoading();
+                                                     
+                                """
                         ,
                         value -> {
                         });
@@ -495,8 +509,7 @@ public class MainActivity extends AppCompatActivity {
             // 设置 WebViewClient，监听页面加载完成事件
             @Override
             public void onPageFinished(WebView view, String url) {
-                if(Objects.equals(url, "about:blank"))
-                {
+                if (Objects.equals(url, "about:blank")) {
                     return;
                 }
                 // 清空info
@@ -555,9 +568,11 @@ public class MainActivity extends AppCompatActivity {
                     // 隐藏加载的 View
                     loadingOverlay.setVisibility(View.GONE);
 
-                    webView1.setVisibility(View.VISIBLE);
-                    webView0.setVisibility(View.GONE);
-                    webView0.loadUrl("about:blank");
+                    if (enableDualWebView) {
+                        webView1.setVisibility(View.VISIBLE);
+                        webView0.setVisibility(View.GONE);
+                        webView0.loadUrl("about:blank");
+                    }
 
                     isChanging = false;
 
@@ -588,6 +603,11 @@ public class MainActivity extends AppCompatActivity {
         // 设置 WebView 客户端
         webView0.setWebChromeClient(new WebChromeClient());
         webView1.setWebChromeClient(new WebChromeClient());
+
+        // 按照设置关闭双缓冲
+        if (!enableDualWebView) {
+            webView0.destroy();
+        }
 
         // 加载上次保存的位置
         loadLastLiveIndex();
@@ -643,7 +663,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN && !isChanging) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_UP) {
                 audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_VOLUME_DOWN) {
@@ -904,26 +924,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else if (DrawerLayoutDetailed.hasFocus()) {
                 return true;
-            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP && !isChanging) {
                 // 执行上一个直播地址的操作
                 navigateToPreviousLive();
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
-            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN && !isChanging) {
                 // 执行下一个直播地址的操作
                 navigateToNextLive();
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
-            } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+            } else if ((event.getKeyCode() == KeyEvent.KEYCODE_ENTER || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) && !isChanging) {
                 // 换台菜单
                 showChannelList();
                 // 显示节目列表
                 showOverlay(channelNames[currentLiveIndex] + "\n" + info);
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
-            } else if (event.getKeyCode() == KeyEvent.KEYCODE_MENU || event.getKeyCode() == KeyEvent.KEYCODE_M) {
+            } else if ((event.getKeyCode() == KeyEvent.KEYCODE_MENU || event.getKeyCode() == KeyEvent.KEYCODE_M) && !isChanging) {
                 // 显示菜单
                 showMenuOverlay();
 
                 return true;  // 返回 true 表示事件已处理，不传递给 WebView
-            } else if (event.getKeyCode() >= KeyEvent.KEYCODE_0 && event.getKeyCode() <= KeyEvent.KEYCODE_9) {
+            } else if ((event.getKeyCode() >= KeyEvent.KEYCODE_0 && event.getKeyCode() <= KeyEvent.KEYCODE_9) && !isChanging) {
                 int numericKey = event.getKeyCode() - KeyEvent.KEYCODE_0;
 
                 // 将按下的数字键追加到缓冲区
@@ -1034,11 +1054,13 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
-    private WebView getCurrentWebview(){
-        if(currentWebView == 0){
-            return webView0;
+    private WebView getCurrentWebview() {
+        if (!enableDualWebView) {
+            return webView1;
         }
-        else{
+        if (currentWebView == 0) {
+            return webView0;
+        } else {
             return webView1;
         }
     }
@@ -1050,10 +1072,9 @@ public class MainActivity extends AppCompatActivity {
 
             isChanging = true;
 
-            if(currentWebView == 0){
+            if (currentWebView == 0) {
                 currentWebView = 1;
-            }
-            else{
+            } else {
                 currentWebView = 0;
             }
 
@@ -1135,7 +1156,7 @@ public class MainActivity extends AppCompatActivity {
         if (webView0 != null) {
             webView0.destroy();
         }
-        if (webView1 != null){
+        if (webView1 != null) {
             webView1.destroy();
         }
         super.onDestroy();

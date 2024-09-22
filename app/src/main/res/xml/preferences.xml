@@ -15,4 +15,10 @@
         android:summary="使用双标签页加载，在较高端设备上提供更好的换台体验"
         android:defaultValue="true" />
 
+    <SwitchPreference
+        android:key="sys_webview"
+        android:title="强制使用系统内核"
+        android:summary="在系统WebView版本较高的设备上禁用X5内核"
+        android:defaultValue="false" />
+
 </PreferenceScreen>
