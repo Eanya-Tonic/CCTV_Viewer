@@ -131,11 +131,10 @@ public class MainActivity extends AppCompatActivity {
         enableDualWebView = sharedPreferences.getBoolean("dual_webview", true);
 
         // 读取WebView设置
-        Boolean forceSysWebView = sharedPreferences.getBoolean("sys_webview",false);
-        if(forceSysWebView){
+        Boolean forceSysWebView = sharedPreferences.getBoolean("sys_webview", false);
+        if (forceSysWebView) {
             QbSdk.forceSysWebView();
-        }
-        else{
+        } else {
             QbSdk.unForceSysWebView();
         }
 
@@ -262,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // X5内核代码
-        if(!forceSysWebView) {
+        if (!forceSysWebView) {
             copyAssets(this, "045738_x5.tbs.apk", "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
 
             boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
@@ -597,9 +596,11 @@ public class MainActivity extends AppCompatActivity {
         webView1.setFocusable(false);
 
         // 开启无图（X5内核）
-        if (canLoadX5) {
-            webView0.getSettingsExtension().setPicModel(IX5WebSettingsExtension.PicModel_NoPic);
-            webView1.getSettingsExtension().setPicModel(IX5WebSettingsExtension.PicModel_NoPic);
+        if (!forceSysWebView) {
+            if (canLoadX5) {
+                webView0.getSettingsExtension().setPicModel(IX5WebSettingsExtension.PicModel_NoPic);
+                webView1.getSettingsExtension().setPicModel(IX5WebSettingsExtension.PicModel_NoPic);
+            }
         }
         // 设置 WebView 客户端
         webView0.setWebChromeClient(new WebChromeClient());
