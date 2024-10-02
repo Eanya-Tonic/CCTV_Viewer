@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int TEXT_SIZE = 22;
     private Boolean enableDualWebView = true;
+    private Boolean enableDirectChange = false;
 
 
     @Override
@@ -664,7 +665,7 @@ public class MainActivity extends AppCompatActivity {
                 audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
             } else if (menuOverlay.hasFocus()) {
                 // menuOverlay具有焦点
-                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
                     // 按下返回键
                     showMenuOverlay();
                     return true;
@@ -793,7 +794,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (DrawerLayout.hasFocus() && !SubMenuCCTV.hasFocus() && !SubMenuLocal.hasFocus() && !DrawerLayoutDetailed.hasFocus()) {
                 // DrawerLayout具有焦点
-                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT || event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
                     // 按下返回键
                     showChannelList();
                     return true;
@@ -839,7 +840,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             } else if (SubMenuCCTV.hasFocus()) {
-                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
                     // 按下返回键
                     DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
                     SubMenuCCTV.setVisibility(View.GONE);
@@ -878,7 +879,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             } else if (SubMenuLocal.hasFocus()) {
-                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
                     // 按下返回键
                     DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
                     SubMenuLocal.setVisibility(View.GONE);
@@ -950,7 +951,7 @@ public class MainActivity extends AppCompatActivity {
                 updateInputTextView();
 
                 return true;  // 事件已处理，不传递给 WebView
-            } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
                 if (doubleBackToExitPressedOnce) {
                     super.onBackPressed();
                     System.exit(0);
