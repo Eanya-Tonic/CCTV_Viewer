@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int TEXT_SIZE = 22;
     private Boolean enableDualWebView = true;
-    private Boolean enableDirectChange = false;
+    private Boolean enableDirectChannel = false;
 
 
     @Override
