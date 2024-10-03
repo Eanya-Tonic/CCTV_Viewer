@@ -16,6 +16,12 @@
         android:defaultValue="false" />
 
     <SwitchPreference
+        android:key="direct_back"
+        android:title="换台抽屉直接返回"
+        android:summary="在换台抽屉中按返回键时，直接关闭抽屉，而不是返回上一级"
+        android:defaultValue="false" />
+
+    <SwitchPreference
         android:key="dual_webview"
         android:title="启用双缓冲加载"
         android:summary="使用双标签页加载，在较高端设备上提供更好的换台体验"

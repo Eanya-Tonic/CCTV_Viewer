@@ -121,9 +121,11 @@ public class MainActivity extends AppCompatActivity {
     private int SubMenuCCTVSelectedIndex = 0;
     private int SubMenuLocalSelectedIndex = 0;
 
+    // 可自定义设置项
     private int TEXT_SIZE = 22;
     private Boolean enableDualWebView = true;
     private Boolean enableDirectChannelChange = false;
+    private Boolean enableDirectBack = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +156,9 @@ public class MainActivity extends AppCompatActivity {
 
         // 读取直接频道切换设置
         enableDirectChannelChange = sharedPreferences.getBoolean("direct_channel_change", false);
+
+        // 读取直接返回设置
+        enableDirectBack = sharedPreferences.getBoolean("direct_back", false);
 
         // 读取双缓冲设置
         enableDualWebView = sharedPreferences.getBoolean("dual_webview", true);
@@ -884,11 +889,16 @@ public class MainActivity extends AppCompatActivity {
             } else if (SubMenuCCTV.hasFocus()) {
                 if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_B) {
                     // 按下返回键
-                    DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
-                    SubMenuCCTV.setVisibility(View.GONE);
-                    DrawerLayoutDetailed.setVisibility(View.GONE);
-                    findViewById(R.id.CCTVScroll).setVisibility(View.GONE);
-                    return true;
+                    if (enableDirectBack) {
+                        showChannelList();
+                        return true;
+                    } else {
+                        DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
+                        SubMenuCCTV.setVisibility(View.GONE);
+                        DrawerLayoutDetailed.setVisibility(View.GONE);
+                        findViewById(R.id.CCTVScroll).setVisibility(View.GONE);
+                        return true;
+                    }
                 } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                     DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
                     SubMenuCCTV.setVisibility(View.GONE);
@@ -925,12 +935,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else if (SubMenuLocal.hasFocus()) {
                 if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_B) {
-                    // 按下返回键
-                    DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
-                    SubMenuLocal.setVisibility(View.GONE);
-                    DrawerLayoutDetailed.setVisibility(View.GONE);
-                    findViewById(R.id.LocalScroll).setVisibility(View.GONE);
-                    return true;
+                    if (enableDirectBack) {
+                        showChannelList();
+                        return true;
+                    } else {
+                        // 按下返回键
+                        DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
+                        SubMenuLocal.setVisibility(View.GONE);
+                        DrawerLayoutDetailed.setVisibility(View.GONE);
+                        findViewById(R.id.LocalScroll).setVisibility(View.GONE);
+                        return true;
+                    }
                 } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
                     DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
                     SubMenuLocal.setVisibility(View.GONE);
