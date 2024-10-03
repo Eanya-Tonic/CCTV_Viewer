@@ -16,3 +16,4 @@ local.properties
 .idea/deploymentTargetDropDown.xml
 *.apk
 app/release/output-metadata.json
+.vscode

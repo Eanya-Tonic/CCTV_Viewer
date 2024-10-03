@@ -10,6 +10,12 @@
         android:defaultValue="1" />
 
     <SwitchPreference
+        android:key="direct_channel_change"
+        android:title="启用直接换台"
+        android:summary="按上下键时，直接换台，而不是弹出换台抽屉"
+        android:defaultValue="false" />
+
+    <SwitchPreference
         android:key="dual_webview"
         android:title="启用双缓冲加载"
         android:summary="使用双标签页加载，在较高端设备上提供更好的换台体验"
