@@ -5,6 +5,8 @@
 从Github Release下载：https://github.com/Eanya-Tonic/CCTV_Viewer/releases/latest
 <br>
 从百度网盘下载：https://pan.baidu.com/s/1e5wMCorJIp9oi5yN8mJ1KA?pwd=qozp 提取码：qozp
+<br>
+从VoidTech实验室下载（X5内核1.7.1版）：https://void-tech.cn/wp-content/uploads/2024/10/CCTV_Viewer_1.7.1-X5.zip
 
 ## 演示视频
 **B站：**
@@ -16,13 +18,19 @@
 ## 使用方法
 **电视盒子：**
 
-![Screenshot_20240127-213312](https://github.com/Eanya-Tonic/CCTV_Viewer/assets/74545593/13e1c752-15e0-40bc-9a58-4138bc93dd8f#pic_center)
+![2024-10-03_23-09-27](https://github.com/user-attachments/assets/9dbda531-1976-438a-b293-fd5b5fa002e6#pic_center)
 
 <div align=center><p>频道切换列表界面</p></div>
 
-![Screenshot_20240127-213326](https://github.com/Eanya-Tonic/CCTV_Viewer/assets/74545593/4624aa07-503d-4cbf-b274-2efa5516d63c#pic_center)
+![2024-10-03_23-09-43](https://github.com/user-attachments/assets/0771c85a-9957-4554-bb98-ebab6f49dba8#pic_center)
 
 <div align=center><p>菜单键功能菜单</p></div>
+
+![2024-10-03_23-09-51](https://github.com/user-attachments/assets/bca3b30b-7ca4-4fa3-a975-05230011ff2f#pic_center)
+
+![2024-10-03_23-09-59](https://github.com/user-attachments/assets/a9f3b5a8-5546-4e95-9eef-ba0e389fd22d#pic_center)
+
+<div align=center><p>设置界面</p></div>
 
 使用上下键切换频道，使用确认键显示当前频道和节目信息、并打开频道切换列表，单击菜单键打开功能菜单，输入数字键换到指定台，双击返回键退出程序。
 
