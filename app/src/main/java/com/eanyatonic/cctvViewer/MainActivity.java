@@ -700,7 +700,7 @@ public class MainActivity extends AppCompatActivity {
                         AudioManager.FLAG_SHOW_UI);
             } else if (menuOverlay.hasFocus()) {
                 // menuOverlay具有焦点
-                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_B) {
                     // 按下返回键
                     showMenuOverlay();
                     return true;
@@ -833,7 +833,7 @@ public class MainActivity extends AppCompatActivity {
                     && !DrawerLayoutDetailed.hasFocus()) {
                 // DrawerLayout具有焦点
                 if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT
-                        || event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
+                        || event.getKeyCode() == KeyEvent.KEYCODE_B) {
                     // 按下返回键
                     showChannelList();
                     return true;
@@ -882,7 +882,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             } else if (SubMenuCCTV.hasFocus()) {
-                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_B) {
                     // 按下返回键
                     DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
                     SubMenuCCTV.setVisibility(View.GONE);
@@ -924,7 +924,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
             } else if (SubMenuLocal.hasFocus()) {
-                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_B) {
                     // 按下返回键
                     DrawerLayout.getChildAt(DrawerLayoutSelectedIndex).requestFocus();
                     SubMenuLocal.setVisibility(View.GONE);
@@ -1002,7 +1002,7 @@ public class MainActivity extends AppCompatActivity {
                 updateInputTextView();
 
                 return true; // 事件已处理，不传递给 WebView
-            } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_ESCAPE) {
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK || event.getKeyCode() == KeyEvent.KEYCODE_B) {
                 if (doubleBackToExitPressedOnce) {
                     super.onBackPressed();
                     System.exit(0);
