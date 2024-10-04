@@ -1,4 +1,4 @@
-<p align="center"> <img src="https://github.com/Eanya-Tonic/CCTV_Viewer/blob/master/app/src/main/res/drawable/icon.png" style="width:200px;" /> </p>  <h1 align="center">电视浏览器</h1>  <p align="center">一个电视机顶盒及Android TV收看电视直播的浏览器 </p>
+<p align="center"> <img src="https://github.com/Eanya-Tonic/CCTV_Viewer/blob/master/app/src/main/res/drawable/icon.png" style="width:200px;" /> </p>  <h1 align="center">电视浏览器</h1>  <p align="center">一个电视机顶盒及Android TV收看网页视频的浏览器 </p>
 
 
 ## 下载安装包
@@ -38,7 +38,7 @@
 
 使用键盘方向键上下控制切换频道，使用Enter键显示当前频道和节目信息、并打开频道切换列表，单击键盘M键打开功能菜单，输入数字键换到指定台。
 
-## 目前可看频道 
+## 目前可看网页
 
 1 CCTV-1 综合
 
