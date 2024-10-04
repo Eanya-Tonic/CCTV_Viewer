@@ -30,7 +30,7 @@
         android:key="dual_webview"
         android:title="启用双缓冲加载"
         android:summary="使用双标签页加载，在较高端设备上提供更好的换台体验"
-        android:defaultValue="true" />
+        android:defaultValue="false" />
 
     <SwitchPreference
         android:key="sys_webview"

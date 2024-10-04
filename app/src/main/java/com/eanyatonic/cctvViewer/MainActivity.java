@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
         enableDirectBack = sharedPreferences.getBoolean("direct_back", false);
 
         // 读取双缓冲设置
-        enableDualWebView = sharedPreferences.getBoolean("dual_webview", true);
+        enableDualWebView = sharedPreferences.getBoolean("dual_webview", false);
 
         // 读取WebView设置
         Boolean forceSysWebView = sharedPreferences.getBoolean("sys_webview", true);
