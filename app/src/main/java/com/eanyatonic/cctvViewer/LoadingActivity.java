@@ -16,10 +16,14 @@ public class LoadingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
+
+        FileUtils.copyAssets(getApplicationContext(), "045738_x5.tbs.apk",
+                FileUtils.getTBSFileDir(getApplicationContext()).getPath() + "/045738_x5.tbs.apk");
+
         // 安装TBS内核
-        QbSdk.reset(MainActivity.get());
-        QbSdk.installLocalTbsCore(MainActivity.get(), 45738,
-                FileUtils.getTBSFileDir(MainActivity.get()).getPath() + "/045738_x5.tbs.apk");
+        QbSdk.reset(getApplicationContext());
+        QbSdk.installLocalTbsCore(getApplicationContext(), 45738,
+                FileUtils.getTBSFileDir(getApplicationContext()).getPath() + "/045738_x5.tbs.apk");
         QbSdk.setTbsListener(new TbsListener() {
             @Override
             public void onDownloadFinish(int i) {
@@ -34,6 +38,9 @@ public class LoadingActivity extends AppCompatActivity {
             @Override
             public void onInstallFinish(int i) {
                 Log.e("TAG", "进行了tbs:onInstallFinish " + i);
+                boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
+                Log.d("canLoadX5", String.valueOf(canLoadX5));
+                Log.d("versionX5",String.valueOf(QbSdk.getTbsVersion(getApplicationContext())));
                 Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);

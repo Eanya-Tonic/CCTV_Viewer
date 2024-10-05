@@ -1,5 +1,7 @@
 package com.eanyatonic.cctvViewer;
 
+import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
+
 import com.eanyatonic.cctvViewer.FileUtils;
 
 import android.Manifest;
@@ -51,8 +53,6 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private AudioManager audioManager;
-
-    private static MainActivity instance;
 
     private WebView webView0; // 导入 WebView
     private WebView webView1; // 导入备用 WebView
@@ -137,8 +137,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        instance = this; // 将当前实例赋值给静态变量
 
         // 加载设置
         // 获取 SharedPreferences
@@ -297,9 +295,8 @@ public class MainActivity extends AppCompatActivity {
         // X5内核代码
         if (!forceSysWebView) {
             requestPermission();
-            FileUtils.copyAssets(getApplicationContext(), "045738_x5.tbs.apk",
-                    FileUtils.getTBSFileDir(getApplicationContext()).getPath() + "/045738_x5.tbs.apk");
 
+            Log.d("versionX5",String.valueOf(QbSdk.getTbsVersion(getApplicationContext())));
             canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
             Log.d("canLoadX5", String.valueOf(canLoadX5));
             if (canLoadX5) {
@@ -658,10 +655,6 @@ public class MainActivity extends AppCompatActivity {
         // 启动定时任务，每隔一定时间执行一次
         // startPeriodicTask();
 
-    }
-
-    public static MainActivity get() {
-        return instance;
     }
 
     // 启动自动播放定时任务
