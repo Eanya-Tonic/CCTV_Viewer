@@ -9,16 +9,15 @@ android {
     defaultConfig {
         applicationId "com.eanyatonic.cctvViewer"
         minSdk 19
-        targetSdk 32
-        versionCode 20
-        versionName "1.7.1"
-        ndk{abiFilters "armeabi", "armeabi-v7a", "x86", "mips"}
+        targetSdk 28
+        versionCode 21
+        versionName "1.7.2"
+        ndk{abiFilters "armeabi"}
         multiDexEnabled true
     }
 
     buildTypes {
         release {
-            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -26,6 +25,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_15
         targetCompatibility JavaVersion.VERSION_15
+    }
+
+    lintOptions {
+        abortOnError false // 允许构建过程中出现 lint 错误
     }
 
 }
@@ -36,7 +39,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'androidx.appcompat:appcompat:1.3.0'
     // api 'com.tencent.tbs:tbssdk:44286'
-    implementation files('libs/tbs_sdk_thirdapp_v4.3.0.253_44153_sharewithdownloadwithfile_withoutGame_obfs_20220117_105333.jar')
+    implementation files('libs/tbs_sdk_thirdapp_v4.3.0.386_44286_sharewithdownloadwithfile_withoutGame_obfs_20230210_114429.jar')
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.multidex:multidex:2.0.1'

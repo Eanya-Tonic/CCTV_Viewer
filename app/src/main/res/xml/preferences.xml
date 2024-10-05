@@ -49,7 +49,7 @@
     <Preference
         android:key="version"
         android:title="版本号"
-        android:summary="Version 1.7.1" />
+        android:summary="Version 1.7.2" />
 </PreferenceCategory>
 
 </PreferenceScreen>

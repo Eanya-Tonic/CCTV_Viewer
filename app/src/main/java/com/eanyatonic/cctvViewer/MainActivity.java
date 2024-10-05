@@ -1,7 +1,11 @@
 package com.eanyatonic.cctvViewer;
 
-import static com.eanyatonic.cctvViewer.FileUtils.copyAssets;
+import com.eanyatonic.cctvViewer.FileUtils;
 
+import android.Manifest;
+import androidx.core.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import android.content.pm.PackageManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,6 +51,8 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private AudioManager audioManager;
+
+    private static MainActivity instance;
 
     private WebView webView0; // 导入 WebView
     private WebView webView1; // 导入备用 WebView
@@ -131,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        instance = this; // 将当前实例赋值给静态变量
 
         // 加载设置
         // 获取 SharedPreferences
@@ -288,16 +296,19 @@ public class MainActivity extends AppCompatActivity {
 
         // X5内核代码
         if (!forceSysWebView) {
-            copyAssets(this, "045738_x5.tbs.apk", "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
+            requestPermission();
+            FileUtils.copyAssets(getApplicationContext(), "045738_x5.tbs.apk",
+                    FileUtils.getTBSFileDir(getApplicationContext()).getPath() + "/045738_x5.tbs.apk");
 
             canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
             Log.d("canLoadX5", String.valueOf(canLoadX5));
             if (canLoadX5) {
-
                 CoreText.setText("当前程序运行在腾讯X5内核上");
+            } else {
+                Intent intent = new Intent(MainActivity.this, LoadingActivity.class);
+                startActivity(intent);
+                finish(); // 销毁 MainActivity
             }
-            QbSdk.installLocalTbsCore(getApplicationContext(), 45738,
-                    "/data/user/0/com.eanyatonic.cctvViewer/app_tbs/045738_x5.tbs.apk");
         }
 
         HashMap<String, Object> map = new HashMap<>(2);
@@ -647,6 +658,10 @@ public class MainActivity extends AppCompatActivity {
         // 启动定时任务，每隔一定时间执行一次
         // startPeriodicTask();
 
+    }
+
+    public static MainActivity get() {
+        return instance;
     }
 
     // 启动自动播放定时任务
@@ -1257,5 +1272,16 @@ public class MainActivity extends AppCompatActivity {
             webView1.destroy();
         }
         super.onDestroy();
+    }
+
+    private boolean checkPermission() {
+        return ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        if (!checkPermission()) {
+            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE , Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
     }
 }
