@@ -12,7 +12,7 @@ android {
         targetSdk 28
         versionCode 21
         versionName "1.7.2"
-        ndk{abiFilters "armeabi"}
+        ndk{abiFilters "armeabi", "armeabi-v7a", "x86"}
         multiDexEnabled true
     }
 
