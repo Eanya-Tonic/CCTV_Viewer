@@ -44,7 +44,7 @@
     <Preference
         android:key="about"
         android:title="电视浏览器"
-        android:summary="一个电视机顶盒及Android TV收看电视直播的浏览器 " />
+        android:summary="一个电视机顶盒及Android TV收看网页视频的浏览器 " />
 
     <Preference
         android:key="version"

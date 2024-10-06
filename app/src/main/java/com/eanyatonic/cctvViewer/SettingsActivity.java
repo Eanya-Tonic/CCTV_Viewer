@@ -3,6 +3,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import android.os.Build;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
@@ -20,6 +21,13 @@ public class SettingsActivity extends AppCompatActivity {
                 .commit();
     }
 
+    private static boolean isCpu64Bit() {
+        for (String abi : Build.SUPPORTED_ABIS) {
+            if (abi.contains("64")) return true;
+        }
+        return false;
+    }
+
     public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
         private SwitchPreference sysWebViewPreference;
 
@@ -28,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.preferences, rootKey);
             // 获取 SwitchPreference
             sysWebViewPreference = findPreference("sys_webview");
+            boolean exists = AssetUtil.fileExistsInAssets(getContext(), "045738_x5.tbs.apk");
 
             if (sysWebViewPreference != null) {
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -36,6 +45,19 @@ public class SettingsActivity extends AppCompatActivity {
                 // 如果开关被关闭，禁用它
                 if (!switchValue) {
                     sysWebViewPreference.setEnabled(false);
+                    sysWebViewPreference.setSummary("系统 WebView 已禁用");
+                }
+
+                // 如果设备是64位，禁用它
+                if (isCpu64Bit()) {
+                    sysWebViewPreference.setEnabled(false);
+                    sysWebViewPreference.setSummary("X5 WebView 已禁用（64位设备不支持）");
+                }
+
+                // 如果 X5 WebView 文件不存在，禁用它
+                if (!exists) {
+                    sysWebViewPreference.setEnabled(false);
+                    sysWebViewPreference.setSummary("程序未集成本地X5 WebView安装包");
                 }
             }
         }

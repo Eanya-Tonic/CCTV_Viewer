@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.content.Intent;
 import android.os.Handler;
+import android.widget.Toast;
 
 import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.smtt.sdk.TbsListener;
@@ -40,6 +41,7 @@ public class LoadingActivity extends AppCompatActivity {
                 @Override
                 public void onInstallFinish(int i) {
                     Log.e("TAG", "进行了tbs:onInstallFinish " + i);
+                    Toast.makeText(getApplicationContext(), "进行了tbs:onInstallFinish " + i, Toast.LENGTH_SHORT).show();
                     boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
                     Log.d("canLoadX5", String.valueOf(canLoadX5));
                     Log.d("versionX5", String.valueOf(QbSdk.getTbsVersion(getApplicationContext())));
