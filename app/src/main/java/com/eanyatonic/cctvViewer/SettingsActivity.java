@@ -22,8 +22,10 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private static boolean isCpu64Bit() {
-        for (String abi : Build.SUPPORTED_ABIS) {
-            if (abi.contains("64")) return true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            for (String abi : Build.SUPPORTED_ABIS) {
+                if (abi.contains("64")) return true;
+            }
         }
         return false;
     }
