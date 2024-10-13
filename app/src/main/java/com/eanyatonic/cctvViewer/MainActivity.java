@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 添加设置按钮
         Button SettingButton = new Button(this);
-        SettingButton.setText("设置");
+        SettingButton.setText("打开设置");
         // 创建 LayoutParams 并设置 margin
         LinearLayout.LayoutParams layoutParams0 = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -1087,11 +1087,13 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.CCTVScroll).setVisibility(View.VISIBLE);
                 SubMenuCCTV.getChildAt(currentLiveIndex).requestFocus();
                 SubMenuCCTVSelectedIndex = currentLiveIndex;
+                DrawerLayoutSelectedIndex = 0;
             } else {
                 SubMenuLocal.setVisibility(View.VISIBLE);
                 findViewById(R.id.LocalScroll).setVisibility(View.VISIBLE);
                 SubMenuLocal.getChildAt(currentLiveIndex - 20).requestFocus();
                 SubMenuLocalSelectedIndex = currentLiveIndex - 20;
+                DrawerLayoutSelectedIndex = 1;
             }
         } else {
             DrawerLayout.setVisibility(View.GONE);
@@ -1115,11 +1117,13 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.CCTVScroll).setVisibility(View.VISIBLE);
                 SubMenuCCTV.getChildAt(selectIndex).requestFocus();
                 SubMenuCCTVSelectedIndex = selectIndex;
+                DrawerLayoutSelectedIndex = 0;
             } else {
                 SubMenuLocal.setVisibility(View.VISIBLE);
                 findViewById(R.id.LocalScroll).setVisibility(View.VISIBLE);
                 SubMenuLocal.getChildAt(selectIndex - 20).requestFocus();
                 SubMenuLocalSelectedIndex = selectIndex - 20;
+                DrawerLayoutSelectedIndex = 1;
             }
         } else {
             DrawerLayout.setVisibility(View.GONE);
