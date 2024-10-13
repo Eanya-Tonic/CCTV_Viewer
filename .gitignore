@@ -17,3 +17,4 @@ local.properties
 *.apk
 app/release/output-metadata.json
 .vscode
+*.log

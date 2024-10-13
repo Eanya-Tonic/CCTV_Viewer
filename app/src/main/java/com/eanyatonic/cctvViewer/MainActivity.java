@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
                 "央视频道", "地方频道"
         };
 
-        // 动态生成中央台按钮
+        // 动态生成中央台按钮和地方台按钮
         for (String channel : firstDrawer) {
             Button button = new Button(this);
             button.setText(channel);
@@ -229,6 +229,21 @@ public class MainActivity extends AppCompatActivity {
             button.setTextSize(TEXT_SIZE);
             DrawerLayout.addView(button);
         }
+
+        // 添加设置按钮
+        Button SettingButton = new Button(this);
+        SettingButton.setText("设置");
+        // 创建 LayoutParams 并设置 margin
+        LinearLayout.LayoutParams layoutParams0 = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams0.setMargins(4, 10, 4, 4);
+        // 设置按钮属性
+        SettingButton.setLayoutParams(layoutParams0);
+        SettingButton.setPadding(16, 16, 16, 16);
+        SettingButton.setTextColor(getResources().getColor(android.R.color.white));
+        SettingButton.setBackground(getResources().getDrawable(R.drawable.detailed_channel_selector));
+        SettingButton.setTextSize(TEXT_SIZE);
+        DrawerLayout.addView(SettingButton);
 
         LinearLayout subMenuCCTV = findViewById(R.id.subMenuCCTV);
         LinearLayout subMenuLocal = findViewById(R.id.subMenuLocal);
