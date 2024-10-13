@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         enableDirectChannelChange = sharedPreferences.getBoolean("direct_channel_change", false);
 
         // 读取直接返回设置
-        enableDirectBack = sharedPreferences.getBoolean("direct_back", false);
+        enableDirectBack = sharedPreferences.getBoolean("direct_back", true);
 
         // 读取双缓冲设置
         enableDualWebView = sharedPreferences.getBoolean("dual_webview", false);
