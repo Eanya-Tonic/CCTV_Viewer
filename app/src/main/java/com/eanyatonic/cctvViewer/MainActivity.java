@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
         // 创建 LayoutParams 并设置 margin
         LinearLayout.LayoutParams layoutParams0 = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams0.setMargins(4, 10, 4, 4);
+        layoutParams0.setMargins(4, 28, 4, 4);
         // 设置按钮属性
         SettingButton.setLayoutParams(layoutParams0);
         SettingButton.setPadding(16, 16, 16, 16);
@@ -870,12 +870,12 @@ public class MainActivity extends AppCompatActivity {
                     // 方向键,切换频道选择
                     if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP) {
                         if (DrawerLayoutSelectedIndex == 0) {
-                            DrawerLayoutSelectedIndex = 1;
+                            DrawerLayoutSelectedIndex = 2;
                         } else {
                             DrawerLayoutSelectedIndex--;
                         }
                     } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                        if (DrawerLayoutSelectedIndex == 1) {
+                        if (DrawerLayoutSelectedIndex == 2) {
                             DrawerLayoutSelectedIndex = 0;
                         } else {
                             DrawerLayoutSelectedIndex++;
@@ -905,6 +905,11 @@ public class MainActivity extends AppCompatActivity {
                             findViewById(R.id.subMenuLocal).setVisibility(View.VISIBLE);
                             findViewById(R.id.LocalScroll).setVisibility(View.VISIBLE);
                             SubMenuLocal.getChildAt(SubMenuLocalSelectedIndex).requestFocus();
+                            break;
+                        case 2:
+                            // 打开设置
+                            showChannelList();
+                            showMenuOverlay();
                             break;
                     }
                     return true;
