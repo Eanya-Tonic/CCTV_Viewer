@@ -6,7 +6,7 @@
 <br>
 从百度网盘下载：https://pan.baidu.com/s/1e5wMCorJIp9oi5yN8mJ1KA?pwd=qozp 提取码：qozp
 <br>
-从VoidTech实验室下载（X5内核1.7.2版）：https://void-tech.cn/wp-content/uploads/2024/10/CCTV_Viewer_1.7.2-X5.zip
+从 VoidTech 实验室下载（X5 内核 1.7.4 测试版）：https://void-tech.cn/wp-content/uploads/2024/10/CCTV_Viewer_1.7.4-X5Beta.zip
 
 ## 演示视频
 **B站：**
@@ -123,6 +123,11 @@
 41 山东卫视
 
 ## 更新日志
+**v1.7.3 更新日志（2024.10.09）**
+
+1.【紧急】修复安卓5以下设备设置闪退导致无法安装X5内核
+
+2.在安卓4.4.2测试X5内核可正常安装启动和播放网页视频
 
 **v1.7.2 更新日志（2024.10.06）**
 
