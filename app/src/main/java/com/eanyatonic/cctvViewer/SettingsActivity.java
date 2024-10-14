@@ -5,6 +5,8 @@ import android.widget.Toast;
 
 import android.os.Build;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
@@ -32,35 +34,39 @@ public class SettingsActivity extends AppCompatActivity {
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
         private SwitchPreference sysWebViewPreference;
+        private ListPreference x5WebViewVersion;
+        private Preference systemInfo;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.preferences, rootKey);
             // 获取 SwitchPreference
             sysWebViewPreference = findPreference("sys_webview");
+            x5WebViewVersion = findPreference("x5_webview_version");
             boolean exists = AssetUtil.fileExistsInAssets(getContext(), "045738_x5.tbs.apk");
 
-            if (sysWebViewPreference != null) {
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-                boolean switchValue = sharedPreferences.getBoolean("sys_webview", true);
-
-                // 如果开关被关闭，禁用它
-                if (!switchValue) {
-                    sysWebViewPreference.setEnabled(false);
-                    sysWebViewPreference.setSummary("系统 WebView 已禁用");
+            if (x5WebViewVersion != null) {
+                if (!exists || isCpu64Bit()) {
+                    {
+                        x5WebViewVersion.setValue("1");
+                    }
                 }
 
-                // 如果设备是64位，禁用它
-                if (isCpu64Bit()) {
-                    sysWebViewPreference.setEnabled(false);
-                    sysWebViewPreference.setSummary("X5 WebView 已禁用（64位设备不支持）");
-                }
+                if (sysWebViewPreference != null) {
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+                    boolean switchValue = sharedPreferences.getBoolean("sys_webview", true);
+                    boolean debugModeValue = sharedPreferences.getBoolean("debug_mode", false);
 
-                // 如果 X5 WebView 文件不存在，禁用它
-                if (!exists) {
-                    sysWebViewPreference.setEnabled(false);
-                    sysWebViewPreference.setSummary("程序未集成本地X5 WebView安装包");
+                    // 如果开关被关闭，禁用它
+                    if (!switchValue && !debugModeValue) {
+                        sysWebViewPreference.setEnabled(false);
+                        sysWebViewPreference.setSummary("系统 WebView 已禁用");
+                    }
                 }
+            }
+            systemInfo = findPreference("info");
+            if (systemInfo != null) {
+                systemInfo.setSummary("Android " + Build.VERSION.RELEASE + " " + (isCpu64Bit() ? "64位" : "32位"));
             }
         }
 

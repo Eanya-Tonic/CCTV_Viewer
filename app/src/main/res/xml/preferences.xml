@@ -39,7 +39,7 @@
         android:defaultValue="true" />
 
     <ListPreference
-        android:key="sys_webview_version"
+        android:key="x5_webview_version"
         android:title="X5内核来源"
         android:summary="选择X5内核的来源"
         android:entries="@array/x5_webview_version"
@@ -66,7 +66,11 @@
     <Preference
         android:key="version"
         android:title="版本号"
-        android:summary="Version 1.7.4" />
+        android:summary="Version 1.8.0" />
+    <Preference
+        android:key="info"
+        android:title="操作系统信息"
+        android:summary="Android系统" />
 </PreferenceCategory>
 
 </PreferenceScreen>

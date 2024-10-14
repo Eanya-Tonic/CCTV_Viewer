@@ -309,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
 
         // X5内核代码
         if (!forceSysWebView) {
+            QbSdk.unForceSysWebView();
             requestPermission();
 
             Log.d("versionX5",String.valueOf(QbSdk.getTbsVersion(getApplicationContext())));
@@ -321,6 +322,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish(); // 销毁 MainActivity
             }
+        }
+        else{
+            QbSdk.forceSysWebView();
         }
 
         HashMap<String, Object> map = new HashMap<>(2);
