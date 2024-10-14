@@ -37,6 +37,23 @@
         android:title="强制使用系统内核"
         android:summary="在系统WebView版本较高的设备上禁用X5内核"
         android:defaultValue="true" />
+
+    <ListPreference
+        android:key="sys_webview_version"
+        android:title="X5内核来源"
+        android:summary="选择X5内核的来源"
+        android:entries="@array/x5_webview_version"
+        android:entryValues="@array/x5_webview_version_values"
+        android:defaultValue="0" />
+
+</PreferenceCategory>
+
+<PreferenceCategory android:title="其他设置">
+    <SwitchPreference
+        android:key="debug_mode"
+        android:title="启用调试模式"
+        android:summary="解除设置界面所有设置项的不可选限制"
+        android:defaultValue="false" />
 </PreferenceCategory>
 
 <PreferenceCategory android:title="关于">

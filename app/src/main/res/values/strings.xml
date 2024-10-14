@@ -12,4 +12,16 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+    <string-array name="x5_webview_version">
+        <item>本地集成（32位）</item>
+        <item>在线获取（32位/64位自动选择）</item>
+        <item>在线获取（强制32位）</item>
+        <item>在线获取（强制64位）</item>
+    </string-array>
+    <string-array name="x5_webview_version_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>
