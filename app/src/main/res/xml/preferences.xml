@@ -44,7 +44,7 @@
         android:summary="选择X5内核的来源"
         android:entries="@array/x5_webview_version"
         android:entryValues="@array/x5_webview_version_values"
-        android:defaultValue="0" />
+        android:defaultValue="0"/>
 
 </PreferenceCategory>
 

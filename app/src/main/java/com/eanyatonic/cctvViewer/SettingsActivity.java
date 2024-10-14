@@ -1,8 +1,8 @@
 package com.eanyatonic.cctvViewer;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
-
 import android.os.Build;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.ListPreference;
@@ -10,7 +10,6 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
-
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -40,30 +39,57 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.preferences, rootKey);
+
+            // 获取 SharedPreferences
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            boolean isFirstRun = sharedPreferences.getBoolean("is_first_run", true);
+
             // 获取 SwitchPreference
             sysWebViewPreference = findPreference("sys_webview");
             x5WebViewVersion = findPreference("x5_webview_version");
             boolean exists = AssetUtil.fileExistsInAssets(getContext(), "045738_x5.tbs.apk");
 
-            if (x5WebViewVersion != null) {
-                if (!exists || isCpu64Bit()) {
-                    {
-                        x5WebViewVersion.setValue("1");
+            if (x5WebViewVersion != null && !exists) {
+                x5WebViewVersion.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        // 获取所有的选项
+                        String[] entryValues = getResources().getStringArray(R.array.x5_webview_version_values);
+
+                        // 比较用户选择的值是否为第一个选项
+                        if (entryValues[0].equals(newValue)) {
+                            // 禁用第一个选项，提示用户
+                            Toast.makeText(getContext(), "程序未集成本地X5内核", Toast.LENGTH_SHORT).show();
+                            return false; // 阻止选项被选择
+                        }
+                        return true; // 允许其他选项被选中
                     }
+                });
+            }
+
+            // 如果是第一次运行，执行代码并更新标志位
+            if (isFirstRun && x5WebViewVersion != null) {
+                if (!exists || isCpu64Bit()) {
+                    x5WebViewVersion.setValue("1"); // 第一次运行时设置
                 }
 
-                if (sysWebViewPreference != null) {
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-                    boolean switchValue = sharedPreferences.getBoolean("sys_webview", true);
-                    boolean debugModeValue = sharedPreferences.getBoolean("debug_mode", false);
+                // 设置 is_first_run 为 false，确保只执行一次
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("is_first_run", false);
+                editor.apply();
+            }
 
-                    // 如果开关被关闭，禁用它
-                    if (!switchValue && !debugModeValue) {
-                        sysWebViewPreference.setEnabled(false);
-                        sysWebViewPreference.setSummary("系统 WebView 已禁用");
-                    }
+            if (sysWebViewPreference != null) {
+                boolean switchValue = sharedPreferences.getBoolean("sys_webview", true);
+                boolean debugModeValue = sharedPreferences.getBoolean("debug_mode", false);
+
+                // 如果开关被关闭，禁用它
+                if (!switchValue && !debugModeValue) {
+                    sysWebViewPreference.setEnabled(false);
+                    sysWebViewPreference.setSummary("X5 WebView 已激活");
                 }
             }
+
             systemInfo = findPreference("info");
             if (systemInfo != null) {
                 systemInfo.setSummary("Android " + Build.VERSION.RELEASE + " " + (isCpu64Bit() ? "64位" : "32位"));
