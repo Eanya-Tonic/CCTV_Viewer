@@ -49,9 +49,10 @@ public class SettingsActivity extends AppCompatActivity {
             // 获取 SwitchPreference
             sysWebViewPreference = findPreference("sys_webview");
             x5WebViewVersion = findPreference("x5_webview_version");
+            boolean debugModeValue = sharedPreferences.getBoolean("debug_mode", false);
             boolean exists = AssetUtil.fileExistsInAssets(getContext(), "045738_x5.tbs.apk");
 
-            if (x5WebViewVersion != null && (!exists || isCpu64Bit())) {
+            if (x5WebViewVersion != null && (!exists || isCpu64Bit()) && !debugModeValue) {
                 x5WebViewVersion.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
@@ -87,7 +88,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             if (sysWebViewPreference != null) {
                 boolean switchValue = sharedPreferences.getBoolean("sys_webview", true);
-                boolean debugModeValue = sharedPreferences.getBoolean("debug_mode", false);
+                debugModeValue = sharedPreferences.getBoolean("debug_mode", false);
 
                 // 如果开关被关闭，禁用它
                 if (!switchValue && !debugModeValue) {
