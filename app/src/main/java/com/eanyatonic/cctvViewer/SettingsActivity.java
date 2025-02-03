@@ -51,7 +51,7 @@ public class SettingsActivity extends AppCompatActivity {
             x5WebViewVersion = findPreference("x5_webview_version");
             boolean exists = AssetUtil.fileExistsInAssets(getContext(), "045738_x5.tbs.apk");
 
-            if (x5WebViewVersion != null && !exists) {
+            if (x5WebViewVersion != null && (!exists || isCpu64Bit())) {
                 x5WebViewVersion.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
                     public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
@@ -61,7 +61,11 @@ public class SettingsActivity extends AppCompatActivity {
                         // 比较用户选择的值是否为第一个选项
                         if (entryValues[0].equals(newValue)) {
                             // 禁用第一个选项，提示用户
-                            Toast.makeText(getContext(), "程序未集成本地X5内核", Toast.LENGTH_SHORT).show();
+                            if(!exists) {
+                                Toast.makeText(getContext(), "程序未集成本地X5内核", Toast.LENGTH_SHORT).show();
+                            } else if (isCpu64Bit()) {
+                                Toast.makeText(getContext(), "64位系统无法安装32位X5内核", Toast.LENGTH_SHORT).show();
+                            }
                             return false; // 阻止选项被选择
                         }
                         return true; // 允许其他选项被选中

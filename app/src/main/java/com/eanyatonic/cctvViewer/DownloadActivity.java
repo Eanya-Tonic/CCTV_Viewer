@@ -104,6 +104,9 @@ public class DownloadActivity extends AppCompatActivity {
                         downloading = false;
                         handler.post(() -> {
                             if (!isDestroyed) downloadStatus.setText("下载完成");
+                            Intent intent = new Intent(DownloadActivity.this, LoadingActivity.class);
+                            startActivity(intent);
+                            finish();
                         });
                     } else if (status == DownloadManager.STATUS_FAILED) {
                         downloading = false;

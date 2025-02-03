@@ -123,4 +123,16 @@ public class FileUtils {
         // 返回文件是否存在
         return file.exists();
     }
+    // 删除问题文件
+    public static boolean deleteFile(Context context, String fileName) {
+        File downloadDir = context.getExternalFilesDir("Download");
+        if(downloadDir == null) {
+            return false;
+        }
+        File file = new File(downloadDir, fileName);
+        if (file.isFile() && file.exists()) {
+            return file.delete();
+        }
+        return false;
+    }
 }

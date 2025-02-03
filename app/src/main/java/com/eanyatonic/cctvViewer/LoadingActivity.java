@@ -99,13 +99,24 @@ public class LoadingActivity extends AppCompatActivity {
                 public void onInstallFinish(int i) {
                     Log.e("TAG", "进行了tbs:onInstallFinish " + i);
                     Toast.makeText(getApplicationContext(), "进行了tbs:onInstallFinish " + i, Toast.LENGTH_SHORT).show();
+                    if(i != 200){
+                        if(isCpu64Bit())
+                        {
+                            FileUtils.deleteFile(getApplicationContext(),"046007_x5.tbs_.apk");
+                        }
+                        else {
+                            FileUtils.deleteFile(getApplicationContext(), "045738_x5.tbs_.apk");
+                        }
+                    }
                     boolean canLoadX5 = QbSdk.canLoadX5(getApplicationContext());
                     Log.d("canLoadX5", String.valueOf(canLoadX5));
                     Log.d("versionX5", String.valueOf(QbSdk.getTbsVersion(getApplicationContext())));
                     Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
+                    new Handler().postDelayed(() -> {
                     finish(); // 销毁 LoadingActivity
+                    }, 2000);
                 }
             });
         }, 6000);
