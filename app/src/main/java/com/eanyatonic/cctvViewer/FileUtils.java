@@ -107,4 +107,20 @@ public class FileUtils {
         }
         return "";
     }
+
+    // 检查文件是否存在于下载目录
+    public static boolean isFileExistInDownloads(Context context, String fileName) {
+        // 获取下载目录
+        File downloadDir = context.getExternalFilesDir("Download");
+        if(downloadDir == null) {
+            return false;
+        }
+        Log.d("FileUtils", "downloadDir: " + downloadDir.getAbsolutePath());
+
+        // 创建目标文件对象
+        File file = new File(downloadDir, fileName);
+
+        // 返回文件是否存在
+        return file.exists();
+    }
 }

@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 import android.os.Build;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -52,7 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
             if (x5WebViewVersion != null && !exists) {
                 x5WebViewVersion.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                     @Override
-                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
                         // 获取所有的选项
                         String[] entryValues = getResources().getStringArray(R.array.x5_webview_version_values);
 
@@ -88,7 +90,17 @@ public class SettingsActivity extends AppCompatActivity {
                     sysWebViewPreference.setEnabled(false);
                     sysWebViewPreference.setSummary("X5 WebView 已激活");
                 }
+                // 如果 X5 WebView 文件不存在，禁用它
+                String installX5Mode = sharedPreferences.getString("x5_webview_version", "0");
+                if (!exists) {
+                    assert installX5Mode != null;
+                    if (installX5Mode.equals("0")) {
+                        sysWebViewPreference.setEnabled(false);
+                        sysWebViewPreference.setSummary("程序未集成本地X5 WebView安装包");
+                    }
+                }
             }
+
 
             systemInfo = findPreference("info");
             if (systemInfo != null) {

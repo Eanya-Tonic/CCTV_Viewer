@@ -23,6 +23,7 @@
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
         android:requestLegacyExternalStorage="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/Theme.央视浏览器">
         <activity
             android:name=".MainActivity"
@@ -42,6 +43,9 @@
             android:theme="@style/SettingsTheme"
             android:screenOrientation="landscape"/>
         <activity android:name=".LoadingActivity"
+            android:theme="@style/SettingsTheme"
+            android:screenOrientation="landscape"/>
+        <activity android:name=".DownloadActivity"
             android:theme="@style/SettingsTheme"
             android:screenOrientation="landscape"/>
         <service
