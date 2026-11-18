@@ -1715,7 +1715,7 @@ public class MainActivity extends AppCompatActivity {
 
     // 底部菜单「切换源」按钮文案显示当前源
     private void updateSourcePill() {
-        if (menuOverlay == null || menuOverlay.getChildCount() < 6) {
+        if (menuOverlay == null || menuOverlay.getChildCount() < 1) {
             return;
         }
         LinearLayout pill = (LinearLayout) menuOverlay.getChildAt(0);
