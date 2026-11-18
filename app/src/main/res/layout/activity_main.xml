@@ -39,26 +39,74 @@
         android:textColor="#FFFFFF"
         android:background="#80000000"/>
 
-    <TextView
-        android:id="@+id/overlayTextView"
+    <LinearLayout
+        android:id="@+id/epgOverlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp"
-        android:textSize="24sp"
-        android:textColor="#FFFFFF"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
         android:padding="16dp"
-        android:gravity="center"
         android:background="@drawable/rounded_background"
-        android:visibility="gone" />
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/overlayChannelText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/overlayNowText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ProgressBar
+                android:id="@+id/overlayProgress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_weight="1"
+                android:max="100" />
+
+            <TextView
+                android:id="@+id/overlayRemainText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/overlayNextText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textSize="18sp"
+            android:textColor="#CCFFFFFF" />
+    </LinearLayout>
 
 
     <RelativeLayout
         android:id="@+id/loadingOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#E0000000"
+        android:background="@color/loading_background"
         android:visibility="gone">
 
         <TextView
@@ -75,12 +123,12 @@
             android:id="@+id/CoreText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginBottom="16dp"
-            android:paddingTop="100dp"
-            android:text="当前程序运行在系统WebView上"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp" />
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="24dp"
+            android:text="系统 WebView"
+            android:textColor="#99FFFFFF"
+            android:textSize="14sp" />
 
     </RelativeLayout>
 
@@ -95,28 +143,56 @@
         android:padding="16dp"
         android:visibility="gone">
 
+        <!-- 切换源 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/menu_pill_selector"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_tv_source" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="切换源"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </LinearLayout>
+
         <!-- 刷新 -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/menu_pill_selector"
+            android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:padding="12dp">
 
-            <ImageButton
-                android:id="@+id/btnRefresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_selector"
-                android:focusable="true"
-                android:padding="8dp"
-                android:src="@drawable/refresh" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_tv_refresh" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="刷新页面"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
         </LinearLayout>
 
         <!-- 播放 -->
@@ -124,23 +200,25 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/menu_pill_selector"
+            android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:padding="12dp">
 
-            <ImageButton
-                android:id="@+id/btnPlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_selector"
-                android:focusable="true"
-                android:padding="8dp"
-                android:src="@drawable/play" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_tv_play" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="播放"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
         </LinearLayout>
 
         <!-- 全屏 -->
@@ -148,101 +226,58 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/menu_pill_selector"
+            android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:padding="12dp">
 
-            <ImageButton
-                android:id="@+id/btnFullscreen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_selector"
-                android:focusable="true"
-                android:padding="8dp"
-                android:src="@drawable/fullscreen" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_tv_fullscreen" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="切换全屏"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
         </LinearLayout>
 
-        <!-- 放大 -->
+        <!-- 静音 -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_margin="4dp"
+            android:background="@drawable/menu_pill_selector"
+            android:focusable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:padding="12dp">
 
-            <ImageButton
-                android:id="@+id/btnZoomIn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_selector"
-                android:focusable="true"
-                android:padding="8dp"
-                android:src="@drawable/zoom_in" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_tv_mute" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="放大页面"
-                android:textColor="#FFFFFF" />
-        </LinearLayout>
-
-        <!-- 缩小 -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/btnZoomOut"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_selector"
-                android:focusable="true"
-                android:padding="8dp"
-                android:src="@drawable/zoom_out" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="缩小页面"
-                android:textColor="#FFFFFF" />
-        </LinearLayout>
-
-        <!-- 设置 -->
-        <LinearLayout
-            android:layout_width="10dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/btnExit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_selector"
-                android:focusable="true"
-                android:padding="8dp"
-                android:src="@drawable/settings" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="打开设置"
-                android:textColor="#FFFFFF" />
+                android:layout_marginStart="8dp"
+                android:text="静音"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
         </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/drawerContainer"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
@@ -296,6 +331,38 @@
                     android:orientation="vertical" />
             </ScrollView>
         </LinearLayout>
+
+        <!-- EPG 日期列 -->
+        <ScrollView
+            android:id="@+id/EpgDateScroll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#88000000"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/EpgDateList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="4dp" />
+        </ScrollView>
+
+        <!-- EPG 节目表栏 -->
+        <ScrollView
+            android:id="@+id/EpgScheduleScroll"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#88000000"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/EpgScheduleList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="4dp" />
+        </ScrollView>
 
     </LinearLayout>
 
