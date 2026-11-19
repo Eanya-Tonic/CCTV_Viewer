@@ -14,6 +14,13 @@
         <item name="colorControlActivated">@color/tv_focus_blue</item>
         <item name="colorControlHighlight">#665DA9E9</item>
         <item name="preferenceTheme">@style/TvPreferenceTheme</item>
+        <item name="preferenceFragmentCompatStyle">@style/TvPreferenceFragment</item>
+    </style>
+
+    <!-- 去掉设置项之间的默认分隔线 -->
+    <style name="TvPreferenceFragment" parent="@style/PreferenceFragment.Material">
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
     </style>
 
     <style name="TvPreferenceTheme" parent="PreferenceThemeOverlay">

@@ -5,8 +5,8 @@
 
     <ListPreference
         android:key="text_size"
-        android:title="换台抽屉字体"
-        android:summary="设置换台抽屉字体大小"
+        android:title="全局字体大小"
+        android:summary="设置抽屉、菜单、浮层等界面文字大小"
         android:entries="@array/text_size"
         android:entryValues="@array/text_size_values"
         android:defaultValue="1" />
@@ -34,25 +34,16 @@
         android:summary="使用双标签页加载，在较高端设备上提供更好的换台体验"
         android:defaultValue="false" />
 
-    <SwitchPreference
-        android:key="load_images"
-        android:title="加载网页图片"
-        android:summary="开启后显示网页图片；关闭可减轻弱设备的卡顿"
-        android:defaultValue="true" />
+    <Preference
+        android:key="x5_kernel"
+        android:title="安装 X5 内核"
+        android:summary="下载并安装 X5 内核，安装成功后可切换" />
 
     <SwitchPreference
-        android:key="sys_webview"
-        android:title="强制使用系统内核"
-        android:summary="在系统WebView版本较高的设备上禁用X5内核"
-        android:defaultValue="true" />
-
-    <ListPreference
-        android:key="x5_webview_version"
-        android:title="X5内核来源"
-        android:summary="选择X5内核的来源"
-        android:entries="@array/x5_webview_version"
-        android:entryValues="@array/x5_webview_version_values"
-        android:defaultValue="0"/>
+        android:key="use_x5"
+        android:title="使用 X5 内核"
+        android:summary="请先安装 X5 内核；切换后需重启应用"
+        android:defaultValue="false" />
 
 </PreferenceCategory>
 

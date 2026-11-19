@@ -42,6 +42,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import java.io.ByteArrayInputStream;
+
 // X5内核代码
 import com.tencent.smtt.export.external.TbsCoreSettings;
 import com.tencent.smtt.sdk.QbSdk;
@@ -167,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean switchPending = false;
     private int webView0Index = -1;
     private int webView1Index = -1;
-    private Runnable videoPollRunnable;
     private boolean activityDestroyed = false;
     private final Runnable pendingLoadRunnable = () -> {
         if (activityDestroyed) {
@@ -196,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
     // 可自定义设置项
     private int TEXT_SIZE = 22;
     private float uiScale = 1f; // 屏幕短边/1080，用于把字号换算成 px
+    private float textScale = 1f; // 全局字体缩放（TEXT_SIZE / 22）
     private int accentColor = 0xFF5DA9E9; // 主题强调色（焦点/进度条等）
     private int activeCategory = 0; // 当前展开的一级类别：0 央视 / 1 地方
     private boolean videoMuted = false;
@@ -218,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 读取字体大小
         TEXT_SIZE = mapTextSizeOption(sharedPreferences.getString("text_size", "1"));
+        textScale = TEXT_SIZE / 22f;
 
         // 读取直接频道切换设置
         enableDirectChannelChange = sharedPreferences.getBoolean("direct_channel_change", true);
@@ -228,11 +231,9 @@ public class MainActivity extends AppCompatActivity {
         // 读取双缓冲设置
         enableDualWebView = sharedPreferences.getBoolean("dual_webview", false);
 
-        // 读取是否加载网页图片
-        boolean loadImages = sharedPreferences.getBoolean("load_images", true);
-
-        // 读取WebView设置
-        Boolean forceSysWebView = sharedPreferences.getBoolean("sys_webview", true);
+        // 读取WebView设置（兼容旧版 sys_webview 开关）
+        X5Kernel.migrateLegacyPrefs(this);
+        boolean useX5Kernel = sharedPreferences.getBoolean(X5Kernel.PREF_USE_X5, false);
 
         // 获取 AudioManager 实例
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -240,9 +241,14 @@ public class MainActivity extends AppCompatActivity {
         // 初始化 WebView
         webView0 = findViewById(R.id.webView0);
         webView1 = findViewById(R.id.webView1);
+        // 页面出画后由 JS 事件回调通知，替代 Java 轮询
+        webView0.addJavascriptInterface(new VideoBridge(), "CctvBridge");
+        webView1.addJavascriptInterface(new VideoBridge(), "CctvBridge");
 
         // 初始化显示正在输入的数字的 TextView
         inputTextView = findViewById(R.id.inputTextView);
+        setTvTextSize(inputTextView, 48);
+        setTvTextSize((TextView) findViewById(R.id.loadingText), 36);
 
         // 初始化 loadingOverlay
         loadingOverlay = findViewById(R.id.loadingOverlay);
@@ -330,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
             button.setPadding(16, 16, 16, 16);
             button.setTextColor(getResources().getColor(android.R.color.white));
             button.setBackground(channelItemBackground());
-            setTvTextSize(button, TEXT_SIZE);
+            setTvTextSize(button, 22);
             DrawerLayout.addView(button);
         }
 
@@ -378,8 +384,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // X5内核代码
-        if (!forceSysWebView) {
+        // X5内核代码：内核在设置页下载/安装，启动时只检测，不可用则直接回退系统内核
+        if (useX5Kernel) {
             QbSdk.unForceSysWebView();
             requestPermission();
 
@@ -389,9 +395,12 @@ public class MainActivity extends AppCompatActivity {
             if (canLoadX5) {
                 CoreText.setText("腾讯 X5 内核");
             } else {
-                Intent intent = new Intent(MainActivity.this, LoadingActivity.class);
-                startActivity(intent);
-                finish(); // 销毁 MainActivity
+                QbSdk.forceSysWebView();
+                sharedPreferences.edit()
+                        .putBoolean(X5Kernel.PREF_USE_X5, false)
+                        .putBoolean(X5Kernel.PREF_INSTALLED, false).apply();
+                CoreText.setText("系统 WebView（X5 不可用）");
+                Toast.makeText(this, "X5 内核不可用，已回退系统内核", Toast.LENGTH_LONG).show();
             }
         }
         else{
@@ -408,8 +417,8 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setDatabaseEnabled(true);
-        webSettings.setLoadsImagesAutomatically(loadImages);
-        webSettings.setBlockNetworkImage(!loadImages);
+        webSettings.setLoadsImagesAutomatically(false);
+        webSettings.setBlockNetworkImage(true);
         webSettings.setMediaPlaybackRequiresUserGesture(false);
         webSettings.setUserAgent(
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
@@ -425,8 +434,8 @@ public class MainActivity extends AppCompatActivity {
         webSettings1.setJavaScriptEnabled(true);
         webSettings1.setDomStorageEnabled(true);
         webSettings1.setDatabaseEnabled(true);
-        webSettings1.setLoadsImagesAutomatically(loadImages);
-        webSettings1.setBlockNetworkImage(!loadImages);
+        webSettings1.setLoadsImagesAutomatically(false);
+        webSettings1.setBlockNetworkImage(true);
         webSettings1.setMediaPlaybackRequiresUserGesture(false);
         webSettings1.setUserAgent(
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36");
@@ -463,39 +472,72 @@ public class MainActivity extends AppCompatActivity {
             // }
 
             @Override
+            public com.tencent.smtt.export.external.interfaces.WebResourceResponse shouldInterceptRequest(
+                    WebView view, String url) {
+                if (url != null && url.contains("mediadata.xuexi.cn") && !url.contains("rcfg")) {
+                    return new com.tencent.smtt.export.external.interfaces.WebResourceResponse(
+                            "text/plain", "utf-8", new ByteArrayInputStream(new byte[0]));
+                }
+                return super.shouldInterceptRequest(view, url);
+            }
+
+            @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 // 页面加载时执行 JavaScript 脚本
                 view.evaluateJavascript(
                         """
-                                // 低频清理 + 退出上限，避免 4ms 空转抢占 CPU（issue #140）
-                                if (!window.__fastLoadingActive) {
+                                // 事件驱动清理广告/干扰节点，避免持续轮询（issue #140）
+                                if (location.hostname.indexOf('cctv.com') >= 0 && !window.__fastLoadingActive) {
                                     window.__fastLoadingActive = true;
-                                    var fastLoadingStart = Date.now();
-                                    function FastLoading() {
-                                        const fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player') || document.querySelector('.videoFull');
-                                        if (fullscreenBtn) { window.__fastLoadingActive = false; return; }
-                                        if (Date.now() - fastLoadingStart > 10000) { window.__fastLoadingActive = false; return; }
-
-                                        // 清空特定的脚本 src 属性
-                                        const scriptKeywords = ['login', 'index', 'daohang', 'grey', 'jquery'];
-                                        Array.from(document.getElementsByTagName('script')).forEach(script => {
-                                            if (scriptKeywords.some(keyword => script.src.includes(keyword))) {
-                                                script.src = '';
-                                            }
-                                        });
-
-                                        // 清空具有特定 class 的 div 内容
-                                        const classNames = ['newmap', 'newtopbz', 'newtopbzTV', 'column_wrapper'];
-                                        classNames.forEach(className => {
-                                            Array.from(document.getElementsByClassName(className)).forEach(div => {
-                                                div.innerHTML = '';
-                                            });
-                                        });
-
-                                        var flInterval = (Date.now() - fastLoadingStart < 2000) ? 100 : 500;
-                                        setTimeout(FastLoading, flInterval);
+                                    var scriptKeywords = ['login', 'index', 'daohang', 'grey', 'jquery'];
+                                    var classNames = ['newmap', 'newtopbz', 'newtopbzTV', 'column_wrapper'];
+                                    function cleanScripts(root) {
+                                        var list = root.tagName === 'SCRIPT' ? [root] : (root.querySelectorAll ? root.querySelectorAll('script') : []);
+                                        for (var i = 0; i < list.length; i++) {
+                                            var s = list[i];
+                                            try {
+                                                if (s.src && scriptKeywords.some(function (k) { return s.src.indexOf(k) >= 0; })) {
+                                                    s.src = '';
+                                                }
+                                            } catch (e) {}
+                                        }
                                     }
-                                    FastLoading();
+                                    function cleanDivs(root) {
+                                        var divs = [];
+                                        if (root.tagName === 'DIV') divs.push(root);
+                                        if (root.querySelectorAll) {
+                                            for (var c = 0; c < classNames.length; c++) {
+                                                var found = root.querySelectorAll('.' + classNames[c]);
+                                                for (var j = 0; j < found.length; j++) divs.push(found[j]);
+                                            }
+                                        }
+                                        for (var d = 0; d < divs.length; d++) {
+                                            try { divs[d].innerHTML = ''; } catch (e) {}
+                                        }
+                                    }
+                                    cleanScripts(document);
+                                    cleanDivs(document);
+                                    var mo = new MutationObserver(function (muts) {
+                                        for (var m = 0; m < muts.length; m++) {
+                                            var added = muts[m].addedNodes || [];
+                                            for (var n = 0; n < added.length; n++) {
+                                                var node = added[n];
+                                                if (node && node.nodeType === 1) {
+                                                    cleanScripts(node);
+                                                    cleanDivs(node);
+                                                }
+                                            }
+                                        }
+                                        if (document.querySelector('#player_pagefullscreen_yes_player') || document.querySelector('.videoFull')) {
+                                            try { mo.disconnect(); } catch (e) {}
+                                            window.__fastLoadingActive = false;
+                                        }
+                                    });
+                                    try { mo.observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
+                                    setTimeout(function () {
+                                        try { mo.disconnect(); } catch (e) {}
+                                        window.__fastLoadingActive = false;
+                                    }, 10000);
                                 }
 
                                 """,
@@ -511,38 +553,67 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 final int fin = (view == webView0) ? webView0Index : webView1Index;
+                view.evaluateJavascript("window.__fin=" + fin + ";", null);
                 view.evaluateJavascript(
                         """
-
-                                     var autoFullscreenStart = Date.now();
-                                     function EnforceVolume(){
-                                         var vs = document.querySelectorAll('video');
-                                         for (var i=0;i<vs.length;i++){
-                                             try { vs[i].muted = false; vs[i].volume = 1; } catch(e){}
-                                         }
-                                     }
-                                     function AutoFullscreen(){
-                                         var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player')||document.querySelector('.videoFull');
-                                         if(fullscreenBtn!=null){
-                                          fullscreenBtn.click();
-                                          EnforceVolume();
-                                          var volEnd = Date.now() + 8000;
-                                          (function keepVolume(){
-                                             EnforceVolume();
-                                             if (Date.now() < volEnd) setTimeout(keepVolume, 500);
-                                          })();
-                                         }else if(Date.now() - autoFullscreenStart < 10000){
-                                             setTimeout(
-                                                ()=>{ AutoFullscreen();}
-                                            ,100);
-                                         }
-                                     }
-                                AutoFullscreen()
+                                (function () {
+                                    var signaled = false;
+                                    function signal() {
+                                        if (signaled) return;
+                                        signaled = true;
+                                        try { if (window.CctvBridge) window.CctvBridge.onVideoReady(String(window.__fin)); } catch (e) {}
+                                    }
+                                    function enforce(v) {
+                                        try { v.muted = false; v.volume = 1; } catch (e) {}
+                                    }
+                                    function isReady(v) {
+                                        return v && v.readyState >= 2 && !v.paused && v.currentTime > 0;
+                                    }
+                                    function attach(v) {
+                                        if (!v || v.__cctvHooked) return;
+                                        v.__cctvHooked = true;
+                                        ['loadeddata', 'play', 'playing', 'timeupdate'].forEach(function (ev) {
+                                            v.addEventListener(ev, function () {
+                                                enforce(v);
+                                                if (isReady(v)) signal();
+                                            });
+                                        });
+                                    }
+                                    function scan() {
+                                        var vs = document.querySelectorAll('video');
+                                        for (var i = 0; i < vs.length; i++) {
+                                            attach(vs[i]);
+                                            enforce(vs[i]);
+                                            if (isReady(vs[i])) { signal(); return; }
+                                        }
+                                    }
+                                    scan();
+                                    var fsStart = Date.now();
+                                    (function autoFullscreen() {
+                                        var b = document.querySelector('#player_pagefullscreen_yes_player') || document.querySelector('.videoFull');
+                                        if (b) {
+                                            try { b.click(); } catch (e) {}
+                                            scan();
+                                            return;
+                                        }
+                                        if (Date.now() - fsStart < 10000) setTimeout(autoFullscreen, 100);
+                                    })();
+                                    var mo = new MutationObserver(function () { scan(); });
+                                    try { mo.observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
+                                    var start = Date.now();
+                                    (function tick() {
+                                        scan();
+                                        if (signaled || Date.now() - start > 10000) {
+                                            try { mo.disconnect(); } catch (e) {}
+                                            if (!signaled) signal();
+                                            return;
+                                        }
+                                        setTimeout(tick, 500);
+                                    })();
+                                })();
                                 """,
                         value -> {
                         });
-                // 等视频真正出画再撤遮罩
-                startVideoReadyWatch(view, fin);
             }
         });
 
@@ -563,39 +634,72 @@ public class MainActivity extends AppCompatActivity {
             // }
 
             @Override
+            public com.tencent.smtt.export.external.interfaces.WebResourceResponse shouldInterceptRequest(
+                    WebView view, String url) {
+                if (url != null && url.contains("mediadata.xuexi.cn") && !url.contains("rcfg")) {
+                    return new com.tencent.smtt.export.external.interfaces.WebResourceResponse(
+                            "text/plain", "utf-8", new ByteArrayInputStream(new byte[0]));
+                }
+                return super.shouldInterceptRequest(view, url);
+            }
+
+            @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 // 页面加载时执行 JavaScript 脚本
                 view.evaluateJavascript(
                         """
-                                // 低频清理 + 退出上限，避免 4ms 空转抢占 CPU（issue #140）
-                                if (!window.__fastLoadingActive) {
+                                // 事件驱动清理广告/干扰节点，避免持续轮询（issue #140）
+                                if (location.hostname.indexOf('cctv.com') >= 0 && !window.__fastLoadingActive) {
                                     window.__fastLoadingActive = true;
-                                    var fastLoadingStart = Date.now();
-                                    function FastLoading() {
-                                        const fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player') || document.querySelector('.videoFull');
-                                        if (fullscreenBtn) { window.__fastLoadingActive = false; return; }
-                                        if (Date.now() - fastLoadingStart > 10000) { window.__fastLoadingActive = false; return; }
-
-                                        // 清空特定的脚本 src 属性
-                                        const scriptKeywords = ['login', 'index', 'daohang', 'grey', 'jquery'];
-                                        Array.from(document.getElementsByTagName('script')).forEach(script => {
-                                            if (scriptKeywords.some(keyword => script.src.includes(keyword))) {
-                                                script.src = '';
-                                            }
-                                        });
-
-                                        // 清空具有特定 class 的 div 内容
-                                        const classNames = ['newmap', 'newtopbz', 'newtopbzTV', 'column_wrapper'];
-                                        classNames.forEach(className => {
-                                            Array.from(document.getElementsByClassName(className)).forEach(div => {
-                                                div.innerHTML = '';
-                                            });
-                                        });
-
-                                        var flInterval = (Date.now() - fastLoadingStart < 2000) ? 100 : 500;
-                                        setTimeout(FastLoading, flInterval);
+                                    var scriptKeywords = ['login', 'index', 'daohang', 'grey', 'jquery'];
+                                    var classNames = ['newmap', 'newtopbz', 'newtopbzTV', 'column_wrapper'];
+                                    function cleanScripts(root) {
+                                        var list = root.tagName === 'SCRIPT' ? [root] : (root.querySelectorAll ? root.querySelectorAll('script') : []);
+                                        for (var i = 0; i < list.length; i++) {
+                                            var s = list[i];
+                                            try {
+                                                if (s.src && scriptKeywords.some(function (k) { return s.src.indexOf(k) >= 0; })) {
+                                                    s.src = '';
+                                                }
+                                            } catch (e) {}
+                                        }
                                     }
-                                    FastLoading();
+                                    function cleanDivs(root) {
+                                        var divs = [];
+                                        if (root.tagName === 'DIV') divs.push(root);
+                                        if (root.querySelectorAll) {
+                                            for (var c = 0; c < classNames.length; c++) {
+                                                var found = root.querySelectorAll('.' + classNames[c]);
+                                                for (var j = 0; j < found.length; j++) divs.push(found[j]);
+                                            }
+                                        }
+                                        for (var d = 0; d < divs.length; d++) {
+                                            try { divs[d].innerHTML = ''; } catch (e) {}
+                                        }
+                                    }
+                                    cleanScripts(document);
+                                    cleanDivs(document);
+                                    var mo = new MutationObserver(function (muts) {
+                                        for (var m = 0; m < muts.length; m++) {
+                                            var added = muts[m].addedNodes || [];
+                                            for (var n = 0; n < added.length; n++) {
+                                                var node = added[n];
+                                                if (node && node.nodeType === 1) {
+                                                    cleanScripts(node);
+                                                    cleanDivs(node);
+                                                }
+                                            }
+                                        }
+                                        if (document.querySelector('#player_pagefullscreen_yes_player') || document.querySelector('.videoFull')) {
+                                            try { mo.disconnect(); } catch (e) {}
+                                            window.__fastLoadingActive = false;
+                                        }
+                                    });
+                                    try { mo.observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
+                                    setTimeout(function () {
+                                        try { mo.disconnect(); } catch (e) {}
+                                        window.__fastLoadingActive = false;
+                                    }, 10000);
                                 }
 
                                 """,
@@ -611,38 +715,67 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 final int fin = (view == webView0) ? webView0Index : webView1Index;
+                view.evaluateJavascript("window.__fin=" + fin + ";", null);
                 view.evaluateJavascript(
                         """
-
-                                     var autoFullscreenStart = Date.now();
-                                     function EnforceVolume(){
-                                         var vs = document.querySelectorAll('video');
-                                         for (var i=0;i<vs.length;i++){
-                                             try { vs[i].muted = false; vs[i].volume = 1; } catch(e){}
-                                         }
-                                     }
-                                     function AutoFullscreen(){
-                                         var fullscreenBtn = document.querySelector('#player_pagefullscreen_yes_player')||document.querySelector('.videoFull');
-                                         if(fullscreenBtn!=null){
-                                          fullscreenBtn.click();
-                                          EnforceVolume();
-                                          var volEnd = Date.now() + 8000;
-                                          (function keepVolume(){
-                                             EnforceVolume();
-                                             if (Date.now() < volEnd) setTimeout(keepVolume, 500);
-                                          })();
-                                         }else if(Date.now() - autoFullscreenStart < 10000){
-                                             setTimeout(
-                                                ()=>{ AutoFullscreen();}
-                                            ,100);
-                                         }
-                                     }
-                                AutoFullscreen()
+                                (function () {
+                                    var signaled = false;
+                                    function signal() {
+                                        if (signaled) return;
+                                        signaled = true;
+                                        try { if (window.CctvBridge) window.CctvBridge.onVideoReady(String(window.__fin)); } catch (e) {}
+                                    }
+                                    function enforce(v) {
+                                        try { v.muted = false; v.volume = 1; } catch (e) {}
+                                    }
+                                    function isReady(v) {
+                                        return v && v.readyState >= 2 && !v.paused && v.currentTime > 0;
+                                    }
+                                    function attach(v) {
+                                        if (!v || v.__cctvHooked) return;
+                                        v.__cctvHooked = true;
+                                        ['loadeddata', 'play', 'playing', 'timeupdate'].forEach(function (ev) {
+                                            v.addEventListener(ev, function () {
+                                                enforce(v);
+                                                if (isReady(v)) signal();
+                                            });
+                                        });
+                                    }
+                                    function scan() {
+                                        var vs = document.querySelectorAll('video');
+                                        for (var i = 0; i < vs.length; i++) {
+                                            attach(vs[i]);
+                                            enforce(vs[i]);
+                                            if (isReady(vs[i])) { signal(); return; }
+                                        }
+                                    }
+                                    scan();
+                                    var fsStart = Date.now();
+                                    (function autoFullscreen() {
+                                        var b = document.querySelector('#player_pagefullscreen_yes_player') || document.querySelector('.videoFull');
+                                        if (b) {
+                                            try { b.click(); } catch (e) {}
+                                            scan();
+                                            return;
+                                        }
+                                        if (Date.now() - fsStart < 10000) setTimeout(autoFullscreen, 100);
+                                    })();
+                                    var mo = new MutationObserver(function () { scan(); });
+                                    try { mo.observe(document.documentElement, { childList: true, subtree: true }); } catch (e) {}
+                                    var start = Date.now();
+                                    (function tick() {
+                                        scan();
+                                        if (signaled || Date.now() - start > 10000) {
+                                            try { mo.disconnect(); } catch (e) {}
+                                            if (!signaled) signal();
+                                            return;
+                                        }
+                                        setTimeout(tick, 500);
+                                    })();
+                                })();
                                 """,
                         value -> {
                         });
-                // 等视频真正出画再撤遮罩
-                startVideoReadyWatch(view, fin);
             }
         });
 
@@ -675,11 +808,10 @@ public class MainActivity extends AppCompatActivity {
         prefListener = (prefs, key) -> {
             if ("text_size".equals(key)) {
                 TEXT_SIZE = mapTextSizeOption(prefs.getString("text_size", "1"));
+                textScale = TEXT_SIZE / 22f;
                 applyTextSizes();
             } else if ("direct_channel_change".equals(key)) {
                 enableDirectChannelChange = prefs.getBoolean(key, true);
-            } else if ("load_images".equals(key)) {
-                applyImageSetting(prefs.getBoolean(key, true));
             } else if ("theme_color".equals(key)) {
                 accentColor = parseColor(prefs.getString("theme_color", "#FF5DA9E9"));
                 applyThemeColor();
@@ -1179,12 +1311,12 @@ public class MainActivity extends AppCompatActivity {
         nameView.setTextColor(getResources().getColor(android.R.color.white));
         nameView.setSingleLine(true);
         nameView.setEllipsize(TextUtils.TruncateAt.END);
-        setTvTextSize(nameView, TEXT_SIZE);
+        setTvTextSize(nameView, 22);
         item.addView(nameView);
 
         TextView subView = new TextView(this);
         subView.setTextColor(getResources().getColor(android.R.color.white));
-        setTvTextSize(subView, TEXT_SIZE - 4);
+        setTvTextSize(subView, 18);
         subView.setSingleLine(true);
         subView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
         subView.setMarqueeRepeatLimit(-1);
@@ -1210,7 +1342,7 @@ public class MainActivity extends AppCompatActivity {
             b.setPadding(16, 12, 16, 12);
             b.setTextColor(getResources().getColor(android.R.color.white));
             b.setBackground(channelItemBackground());
-            setTvTextSize(b, TEXT_SIZE);
+            setTvTextSize(b, 22);
             b.setFocusable(true);
             EpgDateList.addView(b);
         }
@@ -1239,7 +1371,7 @@ public class MainActivity extends AppCompatActivity {
             TextView empty = new TextView(this);
             empty.setText("暂无节目信息");
             empty.setTextColor(getResources().getColor(android.R.color.white));
-            setTvTextSize(empty, TEXT_SIZE);
+            setTvTextSize(empty, 22);
             empty.setPadding(16, 16, 16, 16);
             empty.setFocusable(true);
             empty.setTag(-1);
@@ -1290,7 +1422,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView createScheduleRow() {
         TextView row = new TextView(this);
-        setTvTextSize(row, TEXT_SIZE);
+        setTvTextSize(row, 22);
         row.setTextColor(getResources().getColor(android.R.color.white));
         row.setFocusable(true);
         row.setSingleLine(true);
@@ -1384,9 +1516,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // 字号按屏幕高度换算成 px（1080p 基准），保证 1080p/4K/模拟器比例一致
+    // 字号按屏幕高度换算成 px（1080p 基准），并乘全局字体缩放
     private void setTvTextSize(TextView tv, float base) {
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, base * uiScale);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, base * uiScale * textScale);
     }
 
     private int mapTextSizeOption(String option) {
@@ -1411,35 +1543,31 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < first.getChildCount(); i++) {
             View v = first.getChildAt(i);
             if (v instanceof Button) {
-                setTvTextSize((Button) v, TEXT_SIZE);
+                setTvTextSize((Button) v, 22);
             }
         }
         applyChannelColTextSize((LinearLayout) findViewById(R.id.subMenuCCTV));
         applyChannelColTextSize((LinearLayout) findViewById(R.id.subMenuLocal));
         LinearLayout dates = findViewById(R.id.EpgDateList);
         for (int i = 0; i < dates.getChildCount(); i++) {
-            setTvTextSize((TextView) dates.getChildAt(i), TEXT_SIZE);
+            setTvTextSize((TextView) dates.getChildAt(i), 22);
         }
         LinearLayout sched = findViewById(R.id.EpgScheduleList);
         for (int i = 0; i < sched.getChildCount(); i++) {
-            setTvTextSize((TextView) sched.getChildAt(i), TEXT_SIZE);
+            setTvTextSize((TextView) sched.getChildAt(i), 22);
         }
         for (int i = 0; i < menuOverlay.getChildCount(); i++) {
             LinearLayout pill = (LinearLayout) menuOverlay.getChildAt(i);
             pill.setBackground(pillBackground());
             setTvTextSize((TextView) pill.getChildAt(1), 18);
         }
-    }
-
-    private void applyImageSetting(boolean on) {
-        if (enableDualWebView && webView0 != null) {
-            webView0.getSettings().setLoadsImagesAutomatically(on);
-            webView0.getSettings().setBlockNetworkImage(!on);
-        }
-        if (webView1 != null) {
-            webView1.getSettings().setLoadsImagesAutomatically(on);
-            webView1.getSettings().setBlockNetworkImage(!on);
-        }
+        setTvTextSize(overlayChannelText, 24);
+        setTvTextSize(overlayNowText, 20);
+        setTvTextSize(overlayRemainText, 16);
+        setTvTextSize(overlayNextText, 18);
+        setTvTextSize(CoreText, 14);
+        setTvTextSize((TextView) findViewById(R.id.loadingText), 36);
+        setTvTextSize(inputTextView, 48);
     }
 
     private int parseColor(String s) {
@@ -1553,8 +1681,8 @@ public class MainActivity extends AppCompatActivity {
     private void applyChannelColTextSize(LinearLayout col) {
         for (int i = 0; i < col.getChildCount(); i++) {
             LinearLayout item = (LinearLayout) col.getChildAt(i);
-            setTvTextSize((TextView) item.getChildAt(0), TEXT_SIZE);
-            setTvTextSize((TextView) item.getChildAt(1), TEXT_SIZE - 4);
+            setTvTextSize((TextView) item.getChildAt(0), 22);
+            setTvTextSize((TextView) item.getChildAt(1), 18);
         }
     }
 
@@ -1626,7 +1754,6 @@ public class MainActivity extends AppCompatActivity {
             // 收起可能残留的 EPG 浮层，避免透出
             handler.removeCallbacks(hideOverlayRunnable);
             epgOverlay.setVisibility(View.GONE);
-            cancelVideoPoll();
             // 显示加载的View
             loadingOverlay.setVisibility(View.VISIBLE);
 
@@ -1781,7 +1908,6 @@ public class MainActivity extends AppCompatActivity {
         saveCurrentLiveIndex();
         switchPending = true;
         isChanging = true;
-        cancelVideoPoll();
         String name = channelNames[idx].replaceFirst("^\\d+\\s*", "");
         String sourceLabel = usesYsp(idx) ? "央视频" : "央视网";
         ((TextView) findViewById(R.id.loadingText)).setText("正在切换到 " + name + "（" + sourceLabel + "）");
@@ -1792,48 +1918,31 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(pendingLoadRunnable, 300);
     }
 
-    private void cancelVideoPoll() {
-        if (videoPollRunnable != null) {
-            handler.removeCallbacks(videoPollRunnable);
-            videoPollRunnable = null;
-        }
-    }
-
-    // 轮询当前 WebView 的 <video> 是否真的在播放，出画后（或超时）再撤遮罩
-    private void startVideoReadyWatch(final WebView target, final int fin) {
-        cancelVideoPoll();
-        final long start = System.currentTimeMillis();
-        videoPollRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (activityDestroyed) {
-                    return;
-                }
-                if (switchPending || fin != currentLiveIndex) {
-                    return;
-                }
-                if (System.currentTimeMillis() - start > 10000) {
-                    finishChannelLoad(target, fin);
-                    return;
-                }
-                target.evaluateJavascript(
-                        "var v=document.querySelector('video');(v&&v.readyState>=2&&!v.paused&&v.currentTime>0)?'true':'false'",
-                        value -> {
-                            if (activityDestroyed) {
-                                return;
-                            }
-                            if (switchPending || fin != currentLiveIndex) {
-                                return;
-                            }
-                            if (value != null && value.contains("true")) {
-                                finishChannelLoad(target, fin);
-                            } else {
-                                handler.postDelayed(videoPollRunnable, 300);
-                            }
-                        });
+    private class VideoBridge {
+        @android.webkit.JavascriptInterface
+        public void onVideoReady(String fin) {
+            final int f;
+            try {
+                f = Integer.parseInt(fin);
+            } catch (Exception e) {
+                return;
             }
-        };
-        handler.postDelayed(videoPollRunnable, 300);
+            handler.post(() -> {
+                if (activityDestroyed || switchPending || f != currentLiveIndex) {
+                    return;
+                }
+                WebView target = null;
+                if (f == webView0Index && webView0 != null) {
+                    target = webView0;
+                } else if (f == webView1Index && webView1 != null) {
+                    target = webView1;
+                }
+                if (target == null) {
+                    return;
+                }
+                finishChannelLoad(target, f);
+            });
+        }
     }
 
     private void finishChannelLoad(WebView view, int fin) {
@@ -2020,7 +2129,6 @@ public class MainActivity extends AppCompatActivity {
         // 移除未执行的定时/轮询任务，避免持有 Activity
         handler.removeCallbacks(hideOverlayRunnable);
         handler.removeCallbacks(pendingLoadRunnable);
-        cancelVideoPoll();
         if (epgRepo != null) {
             epgRepo.shutdown();
             epgRepo = null;
