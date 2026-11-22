@@ -32,4 +32,13 @@
         android:visibility="gone"
         android:layout_marginTop="16dp"/>
 
+    <!-- 取消下载并返回系统内核 -->
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="取消下载"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"/>
+
 </LinearLayout>

@@ -4,8 +4,45 @@
         <item name="android:windowBackground">@color/loading_background</item>
     </style>
 
-    <!-- 自定义设置主题 -->
-    <style name="SettingsTheme" parent="@style/Theme.AppCompat.Light.NoActionBar" >
+    <!-- 自定义设置主题：深色 TV 风格，与换台/节目抽屉一致 -->
+    <style name="SettingsTheme" parent="@style/Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@color/settings_background</item>
+        <item name="android:colorBackground">@color/settings_background</item>
+        <item name="android:textColorPrimary">#FFFFFFFF</item>
+        <item name="android:textColorSecondary">#CCFFFFFF</item>
+        <item name="colorAccent">@color/tv_focus_blue</item>
+        <item name="colorControlActivated">@color/tv_focus_blue</item>
+        <item name="colorControlHighlight">#665DA9E9</item>
+        <item name="preferenceTheme">@style/TvPreferenceTheme</item>
+        <item name="preferenceFragmentCompatStyle">@style/TvPreferenceFragment</item>
+    </style>
+
+    <!-- 去掉设置项之间的默认分隔线 -->
+    <style name="TvPreferenceFragment" parent="@style/PreferenceFragment.Material">
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+    </style>
+
+    <style name="TvPreferenceTheme" parent="PreferenceThemeOverlay">
+        <item name="preferenceStyle">@style/TvPreference</item>
+        <item name="switchPreferenceStyle">@style/TvSwitchPreference</item>
+        <item name="dialogPreferenceStyle">@style/TvListPreference</item>
+        <item name="preferenceCategoryStyle">@style/TvPreferenceCategory</item>
+    </style>
+
+    <style name="TvPreferenceCategory" parent="Preference.Category">
+        <item name="android:layout">@layout/pref_category_tv</item>
+    </style>
+
+    <style name="TvPreference" parent="Preference">
+        <item name="android:layout">@layout/pref_row_tv</item>
+    </style>
+
+    <style name="TvSwitchPreference" parent="Preference.SwitchPreference">
+        <item name="android:layout">@layout/pref_row_tv</item>
+    </style>
+
+    <style name="TvListPreference" parent="Preference.DialogPreference">
+        <item name="android:layout">@layout/pref_row_tv</item>
     </style>
 </resources>
